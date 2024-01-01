@@ -49,6 +49,7 @@ function Interface:CreateInterface()
   NS.UpdateFont(Text)
   NS.UpdateText(Text, runSpeed)
 
+  Interface.speed = runSpeed
   Interface.text = Text
   Interface.textFrame = TextFrame
 

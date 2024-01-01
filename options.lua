@@ -8,13 +8,27 @@ NS.AceConfig = {
   name = AddonName,
   type = "group",
   args = {
-    showlabel = {
-      name = "Toggle label on/off",
+    round = {
+      name = "Round the percentage value",
       type = "toggle",
       width = "double",
       order = 1,
       set = function(_, val)
+        DMS.db.global.round = val
+        NS.UpdateText(NS.Interface.text, NS.Interface.speed)
+      end,
+      get = function(_)
+        return DMS.db.global.round
+      end,
+    },
+    showlabel = {
+      name = "Toggle label on/off",
+      type = "toggle",
+      width = "double",
+      order = 2,
+      set = function(_, val)
         DMS.db.global.showlabel = val
+        NS.UpdateText(NS.Interface.text, NS.Interface.speed)
       end,
       get = function(_)
         return DMS.db.global.showlabel
@@ -24,10 +38,10 @@ NS.AceConfig = {
       type = "input",
       name = "Label Text",
       width = "double",
-      order = 2,
+      order = 3,
       set = function(_, val)
         DMS.db.global.labeltext = val
-        NS.UpdateText(NS.Interface.text, val)
+        NS.UpdateText(NS.Interface.text, NS.Interface.speed)
         NS.Interface.textFrame:SetWidth(NS.Interface.text:GetStringWidth())
         NS.Interface.textFrame:SetHeight(NS.Interface.text:GetStringHeight())
       end,
@@ -39,7 +53,7 @@ NS.AceConfig = {
       type = "range",
       name = "Font Size",
       width = "double",
-      order = 3,
+      order = 4,
       min = 1,
       max = 500,
       step = 1,
@@ -51,23 +65,6 @@ NS.AceConfig = {
       end,
       get = function(_)
         return DMS.db.global.fontsize
-      end,
-    },
-    color = {
-      type = "color",
-      name = "Color",
-      width = "double",
-      order = 4,
-      hasAlpha = true,
-      set = function(_, val1, val2, val3, val4)
-        DMS.db.global.color.r = val1
-        DMS.db.global.color.g = val2
-        DMS.db.global.color.b = val3
-        DMS.db.global.color.a = val4
-        NS.Interface.text:SetTextColor(val1, val2, val3, val4)
-      end,
-      get = function(_)
-        return DMS.db.global.color.r, DMS.db.global.color.g, DMS.db.global.color.b, DMS.db.global.color.a
       end,
     },
     font = {
@@ -85,6 +82,23 @@ NS.AceConfig = {
       end,
       get = function(_)
         return DMS.db.global.font
+      end,
+    },
+    color = {
+      type = "color",
+      name = "Color",
+      width = "double",
+      order = 6,
+      hasAlpha = true,
+      set = function(_, val1, val2, val3, val4)
+        DMS.db.global.color.r = val1
+        DMS.db.global.color.g = val2
+        DMS.db.global.color.b = val3
+        DMS.db.global.color.a = val4
+        NS.Interface.text:SetTextColor(val1, val2, val3, val4)
+      end,
+      get = function(_)
+        return DMS.db.global.color.r, DMS.db.global.color.g, DMS.db.global.color.b, DMS.db.global.color.a
       end,
     },
   },

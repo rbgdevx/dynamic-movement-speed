@@ -23,21 +23,19 @@ do
       playerMovingFrame.moving = moving
     end
 
-    local speed = NS.GetSpeedInfo()
-    if playerMovingFrame and playerMovingFrame.speed ~= speed then
-      playerMovingFrame.speed = speed
-    end
+    local currentSpeed, runSpeed = NS.GetSpeedInfo()
+    if playerMovingFrame and playerMovingFrame.speed ~= currentSpeed then
+      playerMovingFrame.speed = currentSpeed
 
-    if playerMovingFrame then
-      local currentSpeed, runSpeed = NS.GetSpeedInfo()
-      local speedPercent = ""
+      local speedPercent = playerMovingFrame.speed
 
       if playerMovingFrame.moving or currentSpeed > 0 then
-        speedPercent = NS.formatSpeed(currentSpeed)
+        speedPercent = currentSpeed
       else
-        speedPercent = NS.formatSpeed(runSpeed)
+        speedPercent = runSpeed
       end
 
+      Interface.speed = speedPercent
       NS.UpdateText(Interface.text, speedPercent)
     end
   end
@@ -50,7 +48,8 @@ do
       --- @cast playerMovingFrame PlayerMovingFrame
       playerMovingFrame.speed = currentSpeed
 
-      local runSpeedPercent = NS.formatSpeed(runSpeed)
+      local runSpeedPercent = runSpeed
+      Interface.speed = runSpeedPercent
       NS.UpdateText(Interface.text, runSpeedPercent)
     end
 

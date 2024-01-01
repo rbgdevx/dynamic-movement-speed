@@ -7,12 +7,27 @@ local sformat = string.format
 
 local LSM = LibStub("LibSharedMedia-3.0")
 
+NS.round = function(x)
+  local decimal = x - math.floor(x)
+  if decimal < 0.5 then
+    return math.floor(x)
+  else
+    return math.ceil(x)
+  end
+end
+
 NS.getPercent = function(speed)
   return speed / 7 * 100
 end
 
-NS.formatSpeed = function(speed)
-  return sformat("%.2f%%", NS.getPercent(speed))
+NS.formatSpeed = function(speed, round)
+  if round then
+    local percent = NS.getPercent(speed)
+    local rounded = NS.round(percent)
+    return sformat("%d%%", rounded)
+  else
+    return sformat("%.1f%%", NS.getPercent(speed))
+  end
 end
 
 NS.GetSpeedInfo = function()
@@ -29,7 +44,8 @@ NS.GetSpeedInfo = function()
   return GetUnitSpeed("player")
 end
 
-NS.UpdateText = function(frame, txt)
+NS.UpdateText = function(frame, speed)
+  local txt = NS.formatSpeed(speed, DMS.db.global.round)
   if DMS.db.global.showlabel then
     if DMS.db.global.labeltext then
       local speedWithLabel = sformat("%s %s", DMS.db.global.labeltext, txt)
