@@ -1,6 +1,6 @@
 ## Interface: 100200
 ## Title: DynamicMovementSpeed
-## Version: 1.0.1
+## Version: 1.1.2
 ## Author: Ajax
 ## Notes: Provides real time movement speed
 ## X-Flavor: Mainline
@@ -20,3 +20,4 @@ config.lua
 helpers.lua
 interface.lua
 DynamicMovementSpeed.lua
+options.lua

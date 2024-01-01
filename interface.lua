@@ -19,27 +19,26 @@ function Interface:AddControls(frame)
   frame:SetScript("OnDragStop", function(f)
     f:StopMovingOrSizing()
     local a, _, b, c, d = f:GetPoint()
-    NS.db.global.position[1] = a
-    NS.db.global.position[2] = b
-    NS.db.global.position[3] = c
-    NS.db.global.position[4] = d
+    DMS.db.global.position[1] = a
+    DMS.db.global.position[2] = b
+    DMS.db.global.position[3] = c
+    DMS.db.global.position[4] = d
   end)
 end
 
 function Interface:CreateInterface()
   local TextFrame = CreateFrame("Frame", "DMSInterfaceTextFrame", UIParent)
   TextFrame:SetPoint(
-    NS.db.global.position[1],
+    DMS.db.global.position[1],
     UIParent,
-    NS.db.global.position[2],
-    NS.db.global.position[3],
-    NS.db.global.position[4]
+    DMS.db.global.position[2],
+    DMS.db.global.position[3],
+    DMS.db.global.position[4]
   )
   self:AddControls(TextFrame)
 
   local Text = TextFrame:CreateFontString(nil, "OVERLAY")
-  Text:SetFont(NS.DEFAULT_FONT, NS.db.global.fontsize, "THINOUTLINE")
-  Text:SetTextColor(NS.db.global.color.r, NS.db.global.color.g, NS.db.global.color.b, NS.db.global.color.a)
+  Text:SetTextColor(DMS.db.global.color.r, DMS.db.global.color.g, DMS.db.global.color.b, DMS.db.global.color.a)
   Text:SetShadowOffset(0, 0)
   Text:SetShadowColor(0, 0, 0, 1)
   Text:SetJustifyH("MIDDLE")
@@ -47,6 +46,7 @@ function Interface:CreateInterface()
   Text:SetPoint("CENTER", TextFrame, "CENTER", 0, 0)
 
   local _, runSpeed = NS.GetSpeedInfo()
+  NS.UpdateFont(Text)
   NS.UpdateText(Text, runSpeed)
 
   Interface.text = Text

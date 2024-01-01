@@ -1,21 +1,12 @@
-local AddonName, NS = ...
+local _, NS = ...
 
 local Interface = NS.Interface
 
 local CreateFrame = CreateFrame
 local IsPlayerMoving = IsPlayerMoving
+local LibStub = LibStub
 
-local RegisterAddonMessagePrefix = C_ChatInfo.RegisterAddonMessagePrefix
-
-local DMS = {}
-NS.DMS = DMS
-
-local DMSFrame = CreateFrame("Frame", "DMSFrame")
-DMSFrame:SetScript("OnEvent", function(_, event, ...)
-  if DMS[event] then
-    DMS[event](DMS, ...)
-  end
-end)
+DMS = LibStub("AceAddon-3.0"):NewAddon("DMS", "AceEvent-3.0")
 
 -- Player Moving
 do
@@ -69,20 +60,14 @@ end
 
 function DMS:PLAYER_ENTERING_WORLD()
   Interface:CreateInterface()
-
   self:WatchForPlayerMoving()
 end
 
-function DMS:ADDON_LOADED(addon)
-  if addon == AddonName then
-    DMSFrame:UnregisterEvent("ADDON_LOADED")
-
-    LibStub("AceConfig-3.0"):RegisterOptionsTable(AddonName, NS.AceConfig)
-    LibStub("AceConfigDialog-3.0"):AddToBlizOptions(AddonName, AddonName)
-    NS.db = LibStub("AceDB-3.0"):New("DMSDB", NS.DefaultDatabase, true)
-    RegisterAddonMessagePrefix(AddonName)
-
-    DMSFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-  end
+function DMS:OnInitialize()
+  self.db = LibStub("AceDB-3.0"):New("DMSDB", NS.DefaultDatabase, true)
+  self:SetupOptions()
 end
-DMSFrame:RegisterEvent("ADDON_LOADED")
+
+function DMS:OnEnable()
+  self:RegisterEvent("PLAYER_ENTERING_WORLD")
+end

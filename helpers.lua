@@ -1,8 +1,11 @@
 local _, NS = ...
 
+local LibStub = LibStub
 local GetUnitSpeed = GetUnitSpeed
 
 local sformat = string.format
+
+local LSM = LibStub("LibSharedMedia-3.0")
 
 NS.getPercent = function(speed)
   return speed / 7 * 100
@@ -26,13 +29,17 @@ NS.GetSpeedInfo = function()
   return GetUnitSpeed("player")
 end
 
-NS.UpdateText = function(bar, txt)
-  if NS.db.global.showlabel then
-    if NS.db.global.labeltext then
-      local speedWithLabel = sformat("%s %s", NS.db.global.labeltext, txt)
-      bar:SetText(speedWithLabel)
+NS.UpdateText = function(frame, txt)
+  if DMS.db.global.showlabel then
+    if DMS.db.global.labeltext then
+      local speedWithLabel = sformat("%s %s", DMS.db.global.labeltext, txt)
+      frame:SetText(speedWithLabel)
     end
   else
-    bar:SetText(txt)
+    frame:SetText(txt)
   end
+end
+
+NS.UpdateFont = function(frame)
+  frame:SetFont(LSM:Fetch("font", DMS.db.global.font), DMS.db.global.fontsize, "THINOUTLINE")
 end
