@@ -3,14 +3,11 @@ local AddonName, NS = ...
 local Interface = {}
 NS.Interface = Interface
 
-function Interface:AddControls(frame)
-  frame:SetClampedToScreen(true)
-  frame:EnableMouse(true)
-  frame:SetScript("OnMouseUp", function(_, btn)
-    if btn == "RightButton" then
-      InterfaceOptionsFrame_OpenToCategory(AddonName)
-    end
-  end)
+function Interface:StopMovement(frame)
+  frame:SetMovable(false)
+end
+
+function Interface:MakeMoveable(frame)
   frame:SetMovable(true)
   frame:RegisterForDrag("LeftButton")
   frame:SetScript("OnDragStart", function(f)
@@ -26,33 +23,60 @@ function Interface:AddControls(frame)
   end)
 end
 
+function Interface:Lock(frame)
+  self:StopMovement(frame)
+end
+
+function Interface:Unlock(frame)
+  self:MakeMoveable(frame)
+end
+
+function Interface:AddControls(frame)
+  frame:EnableMouse(true)
+  frame:SetScript("OnMouseUp", function(_, btn)
+    if btn == "RightButton" then
+      LibStub("AceConfigDialog-3.0"):Open(AddonName)
+    end
+  end)
+
+  if DMS.db.global.lock then
+    self:StopMovement(frame)
+  else
+    self:MakeMoveable(frame)
+  end
+end
+
 function Interface:CreateInterface()
-  local TextFrame = CreateFrame("Frame", "DMSInterfaceTextFrame", UIParent)
-  TextFrame:SetPoint(
-    DMS.db.global.position[1],
-    UIParent,
-    DMS.db.global.position[2],
-    DMS.db.global.position[3],
-    DMS.db.global.position[4]
-  )
-  self:AddControls(TextFrame)
+  if not Interface.textFrame then
+    local TextFrame = CreateFrame("Frame", "DMSInterfaceTextFrame", UIParent)
+    TextFrame:SetClampedToScreen(true)
+    TextFrame:SetPoint(
+      DMS.db.global.position[1],
+      UIParent,
+      DMS.db.global.position[2],
+      DMS.db.global.position[3],
+      DMS.db.global.position[4]
+    )
 
-  local Text = TextFrame:CreateFontString(nil, "OVERLAY")
-  Text:SetTextColor(DMS.db.global.color.r, DMS.db.global.color.g, DMS.db.global.color.b, DMS.db.global.color.a)
-  Text:SetShadowOffset(0, 0)
-  Text:SetShadowColor(0, 0, 0, 1)
-  Text:SetJustifyH("MIDDLE")
-  Text:SetJustifyV("MIDDLE")
-  Text:SetPoint("CENTER", TextFrame, "CENTER", 0, 0)
+    self:AddControls(TextFrame)
 
-  local _, runSpeed = NS.GetSpeedInfo()
-  NS.UpdateFont(Text)
-  NS.UpdateText(Text, runSpeed)
+    local Text = TextFrame:CreateFontString(nil, "OVERLAY")
+    Text:SetTextColor(DMS.db.global.color.r, DMS.db.global.color.g, DMS.db.global.color.b, DMS.db.global.color.a)
+    Text:SetShadowOffset(0, 0)
+    Text:SetShadowColor(0, 0, 0, 1)
+    Text:SetJustifyH("MIDDLE")
+    Text:SetJustifyV("MIDDLE")
+    Text:SetPoint("CENTER", TextFrame, "CENTER", 0, 0)
 
-  Interface.speed = runSpeed
-  Interface.text = Text
-  Interface.textFrame = TextFrame
+    local _, runSpeed = NS.GetSpeedInfo()
+    NS.UpdateFont(Text)
+    NS.UpdateText(Text, runSpeed)
 
-  TextFrame:SetWidth(Text:GetStringWidth())
-  TextFrame:SetHeight(Text:GetStringHeight())
+    Interface.speed = runSpeed
+    Interface.text = Text
+    Interface.textFrame = TextFrame
+
+    TextFrame:SetWidth(Text:GetStringWidth())
+    TextFrame:SetHeight(Text:GetStringHeight())
+  end
 end

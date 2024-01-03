@@ -58,7 +58,6 @@ do
 end
 
 function DMS:PLAYER_ENTERING_WORLD()
-  Interface:CreateInterface()
   self:WatchForPlayerMoving()
 end
 
@@ -68,5 +67,7 @@ function DMS:OnInitialize()
 end
 
 function DMS:OnEnable()
+  Interface:CreateInterface()
+
   self:RegisterEvent("PLAYER_ENTERING_WORLD")
 end

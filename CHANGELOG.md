@@ -1,5 +1,9 @@
 # Dynamic Movement Speed
 
+## [v1.1.4](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.1.4) (2024-01-02)
+
+- adding lock function
+
 ## [v1.1.3](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.1.3) (2024-01-01)
 
 - adding default font

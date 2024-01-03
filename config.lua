@@ -2,6 +2,7 @@ local _, NS = ...
 
 NS.DefaultDatabase = {
   ["global"] = {
+    ["lock"] = false,
     ["labeltext"] = "Speed:",
     ["showlabel"] = true,
     ["fontsize"] = 15,

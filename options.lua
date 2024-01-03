@@ -8,6 +8,23 @@ NS.AceConfig = {
   name = AddonName,
   type = "group",
   args = {
+    lock = {
+      name = "Lock the text into place",
+      type = "toggle",
+      width = "double",
+      order = 0,
+      set = function(_, val)
+        DMS.db.global.lock = val
+        if val then
+          NS.Interface:Lock(NS.Interface.textFrame)
+        else
+          NS.Interface:Unlock(NS.Interface.textFrame)
+        end
+      end,
+      get = function(_)
+        return DMS.db.global.lock
+      end,
+    },
     round = {
       name = "Round the percentage value",
       type = "toggle",
