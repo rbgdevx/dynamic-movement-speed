@@ -1,4 +1,4 @@
-local _, NS = ...
+local AddonName, NS = ...
 
 local Interface = NS.Interface
 
@@ -6,7 +6,7 @@ local CreateFrame = CreateFrame
 local IsPlayerMoving = IsPlayerMoving
 local LibStub = LibStub
 
-DMS = LibStub("AceAddon-3.0"):NewAddon("DMS", "AceEvent-3.0")
+DMS = LibStub("AceAddon-3.0"):NewAddon("DMS", "AceEvent-3.0", "AceConsole-3.0")
 
 -- Player Moving
 do
@@ -24,6 +24,8 @@ do
     end
 
     local currentSpeed, runSpeed = NS.GetSpeedInfo()
+    NS.UpdateText(Interface.text, runSpeed)
+
     if playerMovingFrame and playerMovingFrame.speed ~= currentSpeed then
       playerMovingFrame.speed = currentSpeed
 
@@ -64,6 +66,8 @@ end
 function DMS:OnInitialize()
   self.db = LibStub("AceDB-3.0"):New("DMSDB", NS.DefaultDatabase, true)
   self:SetupOptions()
+  self:RegisterChatCommand(AddonName, "SlashCommands")
+  self:RegisterChatCommand("dms", "SlashCommands")
 end
 
 function DMS:OnEnable()

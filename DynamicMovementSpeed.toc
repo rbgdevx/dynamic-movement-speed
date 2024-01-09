@@ -1,21 +1,24 @@
 ## Interface: 100200
 ## Title: DynamicMovementSpeed
-## Version: 1.1.4
+## Version: 1.1.5
 ## Author: Ajax
 ## Notes: Provides real time movement speed
-## X-Flavor: Mainline
+## OptionalDeps: Ace3, LibStub, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets
+## IconTexture: Interface\AddOns\DynamicMovementSpeed\logo.tga
+## DefaultState: Enabled
+## SavedVariables: DMSDB
 ## X-Category: Miscellaneous
 ## X-Credits: Ajax
 ## X-License: All Rights Reserved
 ## X-Website: https://www.curseforge.com/wow/addons/dynamic-movement-speed
-## IconTexture: Interface\AddOns\DynamicMovementSpeed\logo.tga
 ## X-Curse-Project-ID: 956437
 ## X-Wago-ID: qKQxPk6x
 ## X-WoWI-ID: 26667
-## DefaultState: Enabled
-## SavedVariables: DMSDB
 
+#@no-lib-strip@
 embeds.xml
+#@end-no-lib-strip@
+
 config.lua
 helpers.lua
 interface.lua

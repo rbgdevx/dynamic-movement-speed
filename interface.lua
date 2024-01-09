@@ -1,5 +1,8 @@
 local AddonName, NS = ...
 
+local CreateFrame = CreateFrame
+local LibStub = LibStub
+
 local Interface = {}
 NS.Interface = Interface
 
@@ -11,15 +14,19 @@ function Interface:MakeMoveable(frame)
   frame:SetMovable(true)
   frame:RegisterForDrag("LeftButton")
   frame:SetScript("OnDragStart", function(f)
-    f:StartMoving()
+    if DMS.db.global.lock == false then
+      f:StartMoving()
+    end
   end)
   frame:SetScript("OnDragStop", function(f)
-    f:StopMovingOrSizing()
-    local a, _, b, c, d = f:GetPoint()
-    DMS.db.global.position[1] = a
-    DMS.db.global.position[2] = b
-    DMS.db.global.position[3] = c
-    DMS.db.global.position[4] = d
+    if DMS.db.global.lock == false then
+      f:StopMovingOrSizing()
+      local a, _, b, c, d = f:GetPoint()
+      DMS.db.global.position[1] = a
+      DMS.db.global.position[2] = b
+      DMS.db.global.position[3] = c
+      DMS.db.global.position[4] = d
+    end
   end)
 end
 
@@ -58,8 +65,6 @@ function Interface:CreateInterface()
       DMS.db.global.position[4]
     )
 
-    self:AddControls(TextFrame)
-
     local Text = TextFrame:CreateFontString(nil, "OVERLAY")
     Text:SetTextColor(DMS.db.global.color.r, DMS.db.global.color.g, DMS.db.global.color.b, DMS.db.global.color.a)
     Text:SetShadowOffset(0, 0)
@@ -75,6 +80,8 @@ function Interface:CreateInterface()
     Interface.speed = runSpeed
     Interface.text = Text
     Interface.textFrame = TextFrame
+
+    self:AddControls(Interface.textFrame)
 
     TextFrame:SetWidth(Text:GetStringWidth())
     TextFrame:SetHeight(Text:GetStringHeight())

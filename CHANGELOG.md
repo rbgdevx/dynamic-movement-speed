@@ -1,5 +1,13 @@
 # Dynamic Movement Speed
 
+## [v1.1.6](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.1.6) (2024-01-09)
+
+- adding slash command support
+
+## [v1.1.5](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.1.5) (2024-01-08)
+
+- updating embed code
+
 ## [v1.1.4](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.1.4) (2024-01-02)
 
 - adding lock function
@@ -20,4 +28,4 @@
 
 ## [v1.0.0](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.0.0) (2023-12-31)
 
-- N/A
+- initial release

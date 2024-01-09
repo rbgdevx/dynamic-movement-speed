@@ -22,6 +22,8 @@
     "OKAY",
     "NOT_BOUND",
     "InterfaceOptionsFrame_OpenToCategory",
-    "NORMAL_FONT_COLOR_CODE"
+    "NORMAL_FONT_COLOR_CODE",
+    "SlashCmdList",
+    "hash_SlashCmdList"
   ]
 }
