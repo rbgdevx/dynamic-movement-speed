@@ -63,6 +63,10 @@ function DMS:PLAYER_ENTERING_WORLD()
   self:WatchForPlayerMoving()
 end
 
+function DMS:SlashCommands(_)
+  LibStub("AceConfigDialog-3.0"):Open(AddonName)
+end
+
 function DMS:OnInitialize()
   self.db = LibStub("AceDB-3.0"):New("DMSDB", NS.DefaultDatabase, true)
   self:SetupOptions()
