@@ -2,11 +2,11 @@
 
 ## [v1.1.6](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.1.6) (2024-01-09)
 
+- fixing missing function name
+
+## [v1.1.5](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.1.5) (2024-01-09)
+
 - adding slash command support
-
-## [v1.1.5](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.1.5) (2024-01-08)
-
-- updating embed code
 
 ## [v1.1.4](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.1.4) (2024-01-02)
 
