@@ -1,5 +1,10 @@
 # Dynamic Movement Speed
 
+## [v1.1.7](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.1.7) (2024-05-08)
+
+- Fixing speed not updating at times
+- Fixing 10.2.7 bugs for incorrect setting of text justification
+
 ## [v1.1.6](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.1.6) (2024-01-09)
 
 - fixing missing function name
