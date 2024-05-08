@@ -24,7 +24,6 @@ do
     end
 
     local currentSpeed, runSpeed = NS.GetSpeedInfo()
-    NS.UpdateText(Interface.text, runSpeed)
 
     if playerMovingFrame and playerMovingFrame.speed ~= currentSpeed then
       playerMovingFrame.speed = currentSpeed
@@ -43,9 +42,10 @@ do
   end
 
   function DMS:WatchForPlayerMoving()
-    if not playerMovingFrame then
-      local currentSpeed, runSpeed = NS.GetSpeedInfo()
+    local currentSpeed, runSpeed = NS.GetSpeedInfo()
+    NS.UpdateText(Interface.text, runSpeed)
 
+    if not playerMovingFrame then
       playerMovingFrame = CreateFrame("Frame")
       --- @cast playerMovingFrame PlayerMovingFrame
       playerMovingFrame.speed = currentSpeed

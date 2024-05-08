@@ -69,7 +69,7 @@ function Interface:CreateInterface()
     Text:SetTextColor(DMS.db.global.color.r, DMS.db.global.color.g, DMS.db.global.color.b, DMS.db.global.color.a)
     Text:SetShadowOffset(0, 0)
     Text:SetShadowColor(0, 0, 0, 1)
-    Text:SetJustifyH("MIDDLE")
+    Text:SetJustifyH("CENTER")
     Text:SetJustifyV("MIDDLE")
     Text:SetPoint("CENTER", TextFrame, "CENTER", 0, 0)
 
