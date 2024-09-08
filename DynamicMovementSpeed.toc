@@ -1,11 +1,10 @@
-## Interface: 100207
+## Interface: 110002
 ## Title: DynamicMovementSpeed
-## Version: 1.1.7
-## Author: Ajax
+## Version: 1.2.0
+## Author: RBGDEV
 ## Notes: Provides real time movement speed
 ## OptionalDeps: Ace3, LibStub, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets
 ## IconTexture: Interface\AddOns\DynamicMovementSpeed\logo.tga
-## DefaultState: Enabled
 ## SavedVariables: DMSDB
 ## X-Category: Miscellaneous
 ## X-Credits: Ajax

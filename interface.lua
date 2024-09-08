@@ -14,18 +14,18 @@ function Interface:MakeMoveable(frame)
   frame:SetMovable(true)
   frame:RegisterForDrag("LeftButton")
   frame:SetScript("OnDragStart", function(f)
-    if DMS.db.global.lock == false then
+    if NS.db.global.lock == false then
       f:StartMoving()
     end
   end)
   frame:SetScript("OnDragStop", function(f)
-    if DMS.db.global.lock == false then
+    if NS.db.global.lock == false then
       f:StopMovingOrSizing()
       local a, _, b, c, d = f:GetPoint()
-      DMS.db.global.position[1] = a
-      DMS.db.global.position[2] = b
-      DMS.db.global.position[3] = c
-      DMS.db.global.position[4] = d
+      NS.db.global.position[1] = a
+      NS.db.global.position[2] = b
+      NS.db.global.position[3] = c
+      NS.db.global.position[4] = d
     end
   end)
 end
@@ -41,12 +41,14 @@ end
 function Interface:AddControls(frame)
   frame:EnableMouse(true)
   frame:SetScript("OnMouseUp", function(_, btn)
-    if btn == "RightButton" then
-      LibStub("AceConfigDialog-3.0"):Open(AddonName)
+    if NS.db.global.lock == false then
+      if btn == "RightButton" then
+        LibStub("AceConfigDialog-3.0"):Open(AddonName)
+      end
     end
   end)
 
-  if DMS.db.global.lock then
+  if NS.db.global.lock then
     self:StopMovement(frame)
   else
     self:MakeMoveable(frame)
@@ -58,15 +60,15 @@ function Interface:CreateInterface()
     local TextFrame = CreateFrame("Frame", "DMSInterfaceTextFrame", UIParent)
     TextFrame:SetClampedToScreen(true)
     TextFrame:SetPoint(
-      DMS.db.global.position[1],
+      NS.db.global.position[1],
       UIParent,
-      DMS.db.global.position[2],
-      DMS.db.global.position[3],
-      DMS.db.global.position[4]
+      NS.db.global.position[2],
+      NS.db.global.position[3],
+      NS.db.global.position[4]
     )
 
     local Text = TextFrame:CreateFontString(nil, "OVERLAY")
-    Text:SetTextColor(DMS.db.global.color.r, DMS.db.global.color.g, DMS.db.global.color.b, DMS.db.global.color.a)
+    Text:SetTextColor(NS.db.global.color.r, NS.db.global.color.g, NS.db.global.color.b, NS.db.global.color.a)
     Text:SetShadowOffset(0, 0)
     Text:SetShadowColor(0, 0, 0, 1)
     Text:SetJustifyH("CENTER")

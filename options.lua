@@ -1,8 +1,15 @@
 local AddonName, NS = ...
 
 local LibStub = LibStub
+local CopyTable = CopyTable
+local next = next
 
-local DMS = LibStub("AceAddon-3.0"):GetAddon("DMS")
+---@type DMS
+local DMS = NS.DMS
+local DMSFrame = NS.DMS.frame
+
+local Options = {}
+NS.Options = Options
 
 NS.AceConfig = {
   name = AddonName,
@@ -12,9 +19,9 @@ NS.AceConfig = {
       name = "Lock the text into place",
       type = "toggle",
       width = "double",
-      order = 0,
+      order = 1,
       set = function(_, val)
-        DMS.db.global.lock = val
+        NS.db.global.lock = val
         if val then
           NS.Interface:Lock(NS.Interface.textFrame)
         else
@@ -22,66 +29,66 @@ NS.AceConfig = {
         end
       end,
       get = function(_)
-        return DMS.db.global.lock
+        return NS.db.global.lock
       end,
     },
     round = {
       name = "Round the percentage value",
       type = "toggle",
       width = "double",
-      order = 1,
+      order = 2,
       set = function(_, val)
-        DMS.db.global.round = val
+        NS.db.global.round = val
         NS.UpdateText(NS.Interface.text, NS.Interface.speed)
       end,
       get = function(_)
-        return DMS.db.global.round
+        return NS.db.global.round
       end,
     },
     showlabel = {
       name = "Toggle label on/off",
       type = "toggle",
       width = "double",
-      order = 2,
+      order = 3,
       set = function(_, val)
-        DMS.db.global.showlabel = val
+        NS.db.global.showlabel = val
         NS.UpdateText(NS.Interface.text, NS.Interface.speed)
       end,
       get = function(_)
-        return DMS.db.global.showlabel
+        return NS.db.global.showlabel
       end,
     },
     labeltext = {
       type = "input",
       name = "Label Text",
       width = "double",
-      order = 3,
+      order = 4,
       set = function(_, val)
-        DMS.db.global.labeltext = val
+        NS.db.global.labeltext = val
         NS.UpdateText(NS.Interface.text, NS.Interface.speed)
         NS.Interface.textFrame:SetWidth(NS.Interface.text:GetStringWidth())
         NS.Interface.textFrame:SetHeight(NS.Interface.text:GetStringHeight())
       end,
       get = function(_)
-        return DMS.db.global.labeltext
+        return NS.db.global.labeltext
       end,
     },
     fontsize = {
       type = "range",
       name = "Font Size",
       width = "double",
-      order = 4,
+      order = 5,
       min = 1,
       max = 500,
       step = 1,
       set = function(_, val)
-        DMS.db.global.fontsize = val
+        NS.db.global.fontsize = val
         NS.UpdateFont(NS.Interface.text)
         NS.Interface.textFrame:SetWidth(NS.Interface.text:GetStringWidth())
         NS.Interface.textFrame:SetHeight(NS.Interface.text:GetStringHeight())
       end,
       get = function(_)
-        return DMS.db.global.fontsize
+        return NS.db.global.fontsize
       end,
     },
     font = {
@@ -90,38 +97,101 @@ NS.AceConfig = {
       width = "double",
       dialogControl = "LSM30_Font",
       values = AceGUIWidgetLSMlists.font,
-      order = 5,
+      order = 6,
       set = function(_, val)
-        DMS.db.global.font = val
+        NS.db.global.font = val
         NS.UpdateFont(NS.Interface.text)
         NS.Interface.textFrame:SetWidth(NS.Interface.text:GetStringWidth())
         NS.Interface.textFrame:SetHeight(NS.Interface.text:GetStringHeight())
       end,
       get = function(_)
-        return DMS.db.global.font
+        return NS.db.global.font
       end,
     },
     color = {
       type = "color",
       name = "Color",
       width = "double",
-      order = 6,
+      order = 7,
       hasAlpha = true,
       set = function(_, val1, val2, val3, val4)
-        DMS.db.global.color.r = val1
-        DMS.db.global.color.g = val2
-        DMS.db.global.color.b = val3
-        DMS.db.global.color.a = val4
+        NS.db.global.color.r = val1
+        NS.db.global.color.g = val2
+        NS.db.global.color.b = val3
+        NS.db.global.color.a = val4
         NS.Interface.text:SetTextColor(val1, val2, val3, val4)
       end,
       get = function(_)
-        return DMS.db.global.color.r, DMS.db.global.color.g, DMS.db.global.color.b, DMS.db.global.color.a
+        return NS.db.global.color.r, NS.db.global.color.g, NS.db.global.color.b, NS.db.global.color.a
+      end,
+    },
+    debug = {
+      name = "Toggle debug mode",
+      desc = "Turning this feature on prints debug messages to the chat window.",
+      type = "toggle",
+      width = "full",
+      order = 99,
+      set = function(_, val)
+        NS.db.global.debug = val
+      end,
+      get = function(_)
+        return NS.db.global.debug
+      end,
+    },
+    reset = {
+      name = "Reset Everything",
+      type = "execute",
+      width = "normal",
+      order = 100,
+      func = function()
+        DMSDB = CopyTable(NS.DefaultDatabase)
+        NS.db = CopyTable(NS.DefaultDatabase)
       end,
     },
   },
 }
 
-function DMS:SetupOptions()
+function Options:SlashCommands(message)
+  if message == "toggle lock" then
+    if NS.db.global.lock == false then
+      NS.db.global.lock = true
+    else
+      NS.db.global.lock = false
+    end
+  else
+    LibStub("AceConfigDialog-3.0"):Open(AddonName)
+  end
+end
+
+function Options:Setup()
   LibStub("AceConfig-3.0"):RegisterOptionsTable(AddonName, NS.AceConfig)
   LibStub("AceConfigDialog-3.0"):AddToBlizOptions(AddonName, AddonName)
+
+  SLASH_DMS1 = AddonName
+  SLASH_DMS2 = "/dms"
+
+  function SlashCmdList.DMS(message)
+    self:SlashCommands(message)
+  end
 end
+
+function DMS:ADDON_LOADED(addon)
+  if addon == AddonName then
+    DMSFrame:UnregisterEvent("ADDON_LOADED")
+
+    DMSDB = DMSDB and next(DMSDB) ~= nil and DMSDB or {}
+
+    -- Copy any settings from default if they don't exist in current profile
+    NS.CopyDefaults(NS.DefaultDatabase, DMSDB)
+
+    -- Reference to active db profile
+    -- Always use this directly or reference will be invalid
+    NS.db = DMSDB
+
+    -- Remove table values no longer found in default settings
+    NS.CleanupDB(DMSDB, NS.DefaultDatabase)
+
+    Options:Setup()
+  end
+end
+DMSFrame:RegisterEvent("ADDON_LOADED")

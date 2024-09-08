@@ -1,5 +1,13 @@
 # Dynamic Movement Speed
 
+## [v1.2.0](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.2.0) (2024-09-08)
+
+- Adding Dynamic Riding support
+- Fixing bugs
+- Refactor lib usage to match what im doing on BGWC addon to reduce needed libs and global db issues
+- Made it so you can't open the settings when locked and right clicking the text
+- Minor random changes based on learning from BGWC
+
 ## [v1.1.7](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.1.7) (2024-05-08)
 
 - Fixing speed not updating at times
