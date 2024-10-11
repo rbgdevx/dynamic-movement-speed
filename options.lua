@@ -3,6 +3,7 @@ local AddonName, NS = ...
 local LibStub = LibStub
 local CopyTable = CopyTable
 local next = next
+local IsFlying = IsFlying
 
 ---@type DMS
 local DMS = NS.DMS
@@ -39,7 +40,7 @@ NS.AceConfig = {
       order = 2,
       set = function(_, val)
         NS.db.global.round = val
-        NS.UpdateText(NS.Interface.text, NS.Interface.speed)
+        NS.UpdateText(NS.Interface.text, NS.Interface.speed, NS.IsDragonriding() and IsFlying())
       end,
       get = function(_)
         return NS.db.global.round
@@ -52,20 +53,36 @@ NS.AceConfig = {
       order = 3,
       set = function(_, val)
         NS.db.global.showlabel = val
-        NS.UpdateText(NS.Interface.text, NS.Interface.speed)
+        NS.UpdateText(NS.Interface.text, NS.Interface.speed, NS.IsDragonriding() and IsFlying())
       end,
       get = function(_)
         return NS.db.global.showlabel
+      end,
+    },
+    showzero = {
+      name = "Show 0% when NOT moving, instead of run speed",
+      type = "toggle",
+      width = "double",
+      order = 4,
+      set = function(_, val)
+        NS.db.global.showzero = val
+        local currentSpeed, runSpeed = NS.GetSpeedInfo()
+        local staticSpeed = NS.db.global.showzero and 0 or runSpeed
+        local showSpeed = (currentSpeed == 0 or NS.Interface.speed == 0) and staticSpeed or NS.Interface.speed
+        NS.UpdateText(NS.Interface.text, showSpeed, NS.IsDragonriding() and IsFlying())
+      end,
+      get = function(_)
+        return NS.db.global.showzero
       end,
     },
     labeltext = {
       type = "input",
       name = "Label Text",
       width = "double",
-      order = 4,
+      order = 5,
       set = function(_, val)
         NS.db.global.labeltext = val
-        NS.UpdateText(NS.Interface.text, NS.Interface.speed)
+        NS.UpdateText(NS.Interface.text, NS.Interface.speed, NS.IsDragonriding() and IsFlying())
         NS.Interface.textFrame:SetWidth(NS.Interface.text:GetStringWidth())
         NS.Interface.textFrame:SetHeight(NS.Interface.text:GetStringHeight())
       end,
@@ -77,7 +94,7 @@ NS.AceConfig = {
       type = "range",
       name = "Font Size",
       width = "double",
-      order = 5,
+      order = 6,
       min = 1,
       max = 500,
       step = 1,
@@ -97,7 +114,7 @@ NS.AceConfig = {
       width = "double",
       dialogControl = "LSM30_Font",
       values = AceGUIWidgetLSMlists.font,
-      order = 6,
+      order = 7,
       set = function(_, val)
         NS.db.global.font = val
         NS.UpdateFont(NS.Interface.text)
@@ -112,7 +129,7 @@ NS.AceConfig = {
       type = "color",
       name = "Color",
       width = "double",
-      order = 7,
+      order = 8,
       hasAlpha = true,
       set = function(_, val1, val2, val3, val4)
         NS.db.global.color.r = val1

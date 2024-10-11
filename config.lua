@@ -18,6 +18,7 @@ local CreateFrame = CreateFrame
 ---@field lock boolean
 ---@field labeltext string
 ---@field showlabel boolean
+---@field showzero boolean
 ---@field font string
 ---@field round boolean
 ---@field color ColorArray
@@ -59,6 +60,7 @@ NS.DefaultDatabase = {
     lock = false,
     labeltext = "Speed:",
     showlabel = true,
+    showzero = false,
     fontsize = 15,
     font = "Friz Quadrata TT",
     round = true,

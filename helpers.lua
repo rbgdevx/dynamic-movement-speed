@@ -14,6 +14,12 @@ local sformat = string.format
 
 local LSM = LibStub("LibSharedMedia-3.0")
 
+NS.Debug = function(...)
+  if NS.db and NS.db.global.debug then
+    print(...)
+  end
+end
+
 NS.round = function(x)
   local decimal = x - math.floor(x)
   if decimal < 0.5 then

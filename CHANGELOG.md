@@ -1,5 +1,10 @@
 # Dynamic Movement Speed
 
+## [v1.2.1](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.2.1) (2024-10-10)
+
+- Adding new option to show 0 instead of run speed while not moving
+- making sure to only care about events related to you the player
+
 ## [v1.2.0](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.2.0) (2024-09-08)
 
 - Adding Dynamic Riding support

@@ -6,6 +6,7 @@ local CreateFrame = CreateFrame
 local IsPlayerMoving = IsPlayerMoving
 local GetTime = GetTime
 local IsFlying = IsFlying
+local UnitIsUnit = UnitIsUnit
 
 local mmin = math.min
 local mmax = math.max
@@ -19,6 +20,7 @@ local GetPlayerAuraBySpellID = C_UnitAuras.GetPlayerAuraBySpellID
 local DMS = NS.DMS
 local DMSFrame = NS.DMS.frame
 
+local isFlying = false
 local isDragonRiding = false
 local ascentSpell = 372610
 local lastUpdatedSpeed = 0
@@ -62,6 +64,7 @@ do
 
   function DMS:GetDynamicSpeed()
     local time = GetTime()
+    isFlying = IsFlying()
 
     -- Delta time
     local dt = time - lastT
@@ -92,28 +95,21 @@ do
       -- Don't track negative acceleration when boosting
       smoothAccel = mmax(0, smoothAccel)
     end
-    if not IsFlying() then
+    if not isFlying then
       smoothAccel = 0 -- Don't track acceleration on ground
     end
     -- lastAccel = smoothAccel
-    if NS.db.global.debug then
-      print("smoothAccel", smoothAccel)
-    end
+    NS.Debug("smoothAccel", smoothAccel)
 
     -- Update display variables
     isBoosting = boosting
     isThrill = not not thrill
-    if NS.db.global.debug then
-      print("isBoosting", isBoosting)
-      print("isThrill", isThrill)
-    end
+    NS.Debug("isBoosting", isBoosting)
+    NS.Debug("isThrill", isThrill)
 
     dynamicSpeed = smoothSpeed * speedTextFactor
     speedtext = smoothSpeed < 1 and "" or sformat(speedTextFormat, dynamicSpeed)
-    if NS.db.global.debug then
-      print("dynamicSpeed", dynamicSpeed)
-      print("speedtext", speedtext)
-    end
+    NS.Debug("speedtext", speedtext)
   end
 end
 
@@ -128,16 +124,17 @@ do
 
   local function PlayerMoveUpdate()
     local moving = IsPlayerMoving()
+    isDragonRiding = NS.IsDragonriding()
+    isFlying = IsFlying()
 
     if playerMovingFrame and (playerMovingFrame.moving ~= moving or playerMovingFrame.moving == nil) then
       playerMovingFrame.moving = moving
     end
 
     local currentSpeed, runSpeed = NS.GetSpeedInfo()
-
     local correctSpeed = currentSpeed
 
-    if moving and IsFlying() and isDragonRiding then
+    if moving and isFlying and isDragonRiding then
       DMS:GetDynamicSpeed()
       correctSpeed = dynamicSpeed
     end
@@ -147,29 +144,30 @@ do
 
       local speedPercent = playerMovingFrame.speed
 
-      if NS.db.global.debug then
-        print("moving", moving, "flying", IsFlying(), "isDragonRiding", isDragonRiding)
-      end
-
       if playerMovingFrame.moving or correctSpeed > 0 then
         local showSpeed = correctSpeed
-        if not IsFlying() then
+        if not isFlying then
           showSpeed = currentSpeed == 0 and runSpeed or currentSpeed
         end
 
         speedPercent = showSpeed
       else
-        speedPercent = runSpeed
+        local showSpeed = NS.db.global.showzero and 0 or runSpeed
+        speedPercent = showSpeed
       end
 
-      Interface.speed = speedPercent
-      NS.UpdateText(Interface.text, speedPercent, isDragonRiding and IsFlying())
+      NS.Interface.speed = speedPercent
+      NS.UpdateText(Interface.text, speedPercent, isDragonRiding and isFlying)
     end
   end
 
   function DMS:WatchForPlayerMoving()
+    isDragonRiding = NS.IsDragonriding()
+    isFlying = IsFlying()
+
     local currentSpeed, runSpeed = NS.GetSpeedInfo()
-    NS.UpdateText(Interface.text, runSpeed)
+    local showSpeed = currentSpeed == 0 and (NS.db.global.showzero and 0 or runSpeed) or currentSpeed
+    NS.UpdateText(Interface.text, showSpeed, isDragonRiding and isFlying)
 
     if not playerMovingFrame then
       playerMovingFrame = CreateFrame("Frame")
@@ -177,8 +175,9 @@ do
       playerMovingFrame.speed = currentSpeed
 
       local runSpeedPercent = runSpeed
-      Interface.speed = runSpeedPercent
-      NS.UpdateText(Interface.text, runSpeedPercent)
+      showSpeed = currentSpeed == 0 and (NS.db.global.showzero and 0 or runSpeedPercent) or currentSpeed
+      NS.Interface.speed = showSpeed
+      NS.UpdateText(Interface.text, showSpeed, isDragonRiding and isFlying)
     end
 
     playerMovingFrame:SetScript("OnUpdate", PlayerMoveUpdate)
@@ -187,7 +186,33 @@ end
 
 function DMS:PLAYER_ENTERING_WORLD()
   isDragonRiding = NS.IsDragonriding()
+  isFlying = IsFlying()
+
   self:WatchForPlayerMoving()
+
+  if NS.db and NS.db.global.debug then
+    local f = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
+    f:SetPoint("CENTER", 0, 50)
+    f:SetSize(132, 50)
+    f:SetBackdrop({
+      bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+      edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+      edgeSize = 16,
+      insets = { left = 4, right = 4, top = 4, bottom = 4 },
+    })
+    f:SetBackdropColor(0, 0, 0, 0.5)
+    f.glide = f:CreateFontString(nil, nil, "GameTooltipText")
+    f.glide:SetPoint("TOPLEFT", 10, -12)
+    f.movespeed = f:CreateFontString(nil, nil, "GameTooltipText")
+    f.movespeed:SetPoint("TOPLEFT", f.glide, "BOTTOMLEFT")
+    C_Timer.NewTicker(0.1, function()
+      local isGliding, canGlide, forwardSpeed = C_PlayerInfo.GetGlidingInfo()
+      local base = isGliding and forwardSpeed or GetUnitSpeed("player")
+      local movespeed = Round(base / BASE_MOVEMENT_SPEED * 100)
+      f.glide:SetText(format("Gliding speed: |cff71d5ff%d%%|r", forwardSpeed))
+      f.movespeed:SetText(format("Move speed: |cffffff00%d%%|r", movespeed))
+    end)
+  end
 end
 
 local function checkSpeed()
@@ -196,6 +221,7 @@ local function checkSpeed()
     After(0.1, checkSpeed)
   else
     isDragonRiding = NS.IsDragonriding()
+    isFlying = IsFlying()
     DMS:WatchForPlayerMoving()
   end
 end
@@ -206,18 +232,24 @@ function DMS:PLAYER_MOUNT_DISPLAY_CHANGED()
   After(0, checkSpeed)
 end
 
-function DMS:UNIT_POWER_BAR_SHOW()
-  isDragonRiding = NS.IsDragonriding()
-  self:WatchForPlayerMoving()
+function DMS:UNIT_POWER_BAR_SHOW(unitTarget)
+  if UnitIsUnit(unitTarget, "player") then
+    isDragonRiding = NS.IsDragonriding()
+    isFlying = IsFlying()
+    self:WatchForPlayerMoving()
+  end
 end
 
-function DMS:UNIT_POWER_BAR_HIDE()
-  isDragonRiding = NS.IsDragonriding()
-  self:WatchForPlayerMoving()
+function DMS:UNIT_POWER_BAR_HIDE(unitTarget)
+  if UnitIsUnit(unitTarget, "player") then
+    isDragonRiding = NS.IsDragonriding()
+    isFlying = IsFlying()
+    self:WatchForPlayerMoving()
+  end
 end
 
 function DMS:UNIT_SPELLCAST_SUCCEEDED(unitTarget, _, spellID)
-  if unitTarget == "player" and spellID == ascentSpell then
+  if UnitIsUnit(unitTarget, "player") and spellID == ascentSpell then
     ascentStart = GetTime()
   end
 end

@@ -26,7 +26,8 @@
     "SlashCmdList",
     "hash_SlashCmdList",
     "FrameUtil",
-    "ButtonFrameTemplate_HidePortrait"
+    "ButtonFrameTemplate_HidePortrait",
+    "BASE_MOVEMENT_SPEED"
   ],
   "Lua.runtime.version": "Lua 5.1",
   "Lua.runtime.builtin": {

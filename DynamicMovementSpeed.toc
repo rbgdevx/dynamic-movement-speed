@@ -1,6 +1,6 @@
 ## Interface: 110002
 ## Title: DynamicMovementSpeed
-## Version: 1.2.0
+## Version: 1.2.1
 ## Author: RBGDEV
 ## Notes: Provides real time movement speed
 ## OptionalDeps: Ace3, LibStub, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets

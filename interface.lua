@@ -2,6 +2,7 @@ local AddonName, NS = ...
 
 local CreateFrame = CreateFrame
 local LibStub = LibStub
+local IsFlying = IsFlying
 
 local Interface = {}
 NS.Interface = Interface
@@ -75,11 +76,12 @@ function Interface:CreateInterface()
     Text:SetJustifyV("MIDDLE")
     Text:SetPoint("CENTER", TextFrame, "CENTER", 0, 0)
 
-    local _, runSpeed = NS.GetSpeedInfo()
+    local currentSpeed, runSpeed = NS.GetSpeedInfo()
     NS.UpdateFont(Text)
-    NS.UpdateText(Text, runSpeed)
+    local showSpeed = currentSpeed == 0 and (NS.db.global.showzero and 0 or runSpeed) or currentSpeed
+    NS.UpdateText(Text, showSpeed, NS.IsDragonriding() and IsFlying())
 
-    Interface.speed = runSpeed
+    Interface.speed = showSpeed
     Interface.text = Text
     Interface.textFrame = TextFrame
 
