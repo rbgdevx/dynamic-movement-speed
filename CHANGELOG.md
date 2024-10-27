@@ -1,5 +1,9 @@
 # Dynamic Movement Speed
 
+## [v1.2.2](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.2.2) (2024-10-27)
+
+- Update toc
+
 ## [v1.2.1](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.2.1) (2024-10-10)
 
 - Adding new option to show 0 instead of run speed while not moving
