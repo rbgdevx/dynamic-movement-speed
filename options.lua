@@ -5,6 +5,8 @@ local next = next
 local IsFlying = IsFlying
 local LibStub = LibStub
 
+local AceConfig = LibStub("AceConfig-3.0")
+local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local SharedMedia = LibStub("LibSharedMedia-3.0")
 
 ---@type DMS
@@ -48,24 +50,11 @@ NS.AceConfig = {
         return NS.db.global.round
       end,
     },
-    showlabel = {
-      name = "Toggle label on/off",
-      type = "toggle",
-      width = "double",
-      order = 3,
-      set = function(_, val)
-        NS.db.global.showlabel = val
-        NS.UpdateText(NS.Interface.text, NS.Interface.speed, NS.IsDragonriding() and IsFlying())
-      end,
-      get = function(_)
-        return NS.db.global.showlabel
-      end,
-    },
     showzero = {
       name = "Show 0% when NOT moving, instead of run speed",
       type = "toggle",
       width = "double",
-      order = 4,
+      order = 3,
       set = function(_, val)
         NS.db.global.showzero = val
         local currentSpeed, runSpeed = NS.GetSpeedInfo()
@@ -77,11 +66,27 @@ NS.AceConfig = {
         return NS.db.global.showzero
       end,
     },
+    showlabel = {
+      name = "Enable label text",
+      type = "toggle",
+      width = "double",
+      order = 4,
+      set = function(_, val)
+        NS.db.global.showlabel = val
+        NS.UpdateText(NS.Interface.text, NS.Interface.speed, NS.IsDragonriding() and IsFlying())
+      end,
+      get = function(_)
+        return NS.db.global.showlabel
+      end,
+    },
     labeltext = {
       type = "input",
       name = "Label Text",
       width = "double",
       order = 5,
+      disabled = function()
+        return not NS.db.global.showlabel
+      end,
       set = function(_, val)
         NS.db.global.labeltext = val
         NS.UpdateText(NS.Interface.text, NS.Interface.speed, NS.IsDragonriding() and IsFlying())
@@ -144,19 +149,6 @@ NS.AceConfig = {
         return NS.db.global.color.r, NS.db.global.color.g, NS.db.global.color.b, NS.db.global.color.a
       end,
     },
-    debug = {
-      name = "Toggle debug mode",
-      desc = "Turning this feature on prints debug messages to the chat window.",
-      type = "toggle",
-      width = "full",
-      order = 99,
-      set = function(_, val)
-        NS.db.global.debug = val
-      end,
-      get = function(_)
-        return NS.db.global.debug
-      end,
-    },
     reset = {
       name = "Reset Everything",
       type = "execute",
@@ -174,17 +166,19 @@ function Options:SlashCommands(message)
   if message == "toggle lock" then
     if NS.db.global.lock == false then
       NS.db.global.lock = true
+      NS.Interface:Lock(NS.Interface.textFrame)
     else
       NS.db.global.lock = false
+      NS.Interface:Unlock(NS.Interface.textFrame)
     end
   else
-    LibStub("AceConfigDialog-3.0"):Open(AddonName)
+    AceConfigDialog:Open(AddonName)
   end
 end
 
 function Options:Setup()
-  LibStub("AceConfig-3.0"):RegisterOptionsTable(AddonName, NS.AceConfig)
-  LibStub("AceConfigDialog-3.0"):AddToBlizOptions(AddonName, AddonName)
+  AceConfig:RegisterOptionsTable(AddonName, NS.AceConfig)
+  AceConfigDialog:AddToBlizOptions(AddonName, AddonName)
 
   SLASH_DMS1 = AddonName
   SLASH_DMS2 = "/dms"
