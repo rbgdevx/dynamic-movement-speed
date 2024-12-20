@@ -180,7 +180,7 @@ function Options:Setup()
   AceConfig:RegisterOptionsTable(AddonName, NS.AceConfig)
   AceConfigDialog:AddToBlizOptions(AddonName, AddonName)
 
-  SLASH_DMS1 = AddonName
+  SLASH_DMS1 = "/dynamicmovementspeed"
   SLASH_DMS2 = "/dms"
 
   function SlashCmdList.DMS(message)

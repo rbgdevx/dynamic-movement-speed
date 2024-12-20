@@ -1,5 +1,13 @@
 # Dynamic Movement Speed
 
+## [v1.2.3](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.2.3) (2024-12-20)
+
+- Drag and Click control updates to ensure click through when hidden or locked
+- Fixing font dropdown list
+- Updating font size range
+- Minor Cleanup
+- Update toc
+
 ## [v1.2.2](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.2.2) (2024-10-27)
 
 - Update toc

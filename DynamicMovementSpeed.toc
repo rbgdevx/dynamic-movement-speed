@@ -1,9 +1,9 @@
-## Interface: 110005
+## Interface: 110007
 ## Title: DynamicMovementSpeed
-## Version: 1.2.2
+## Version: 1.2.3
 ## Author: RBGDEV
 ## Notes: Provides real time movement speed
-## OptionalDeps: Ace3, LibStub, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets
+## OptionalDeps: AceConfig-3.0, AceGUI-3.0, AceGUI-3.0-SharedMediaWidgets, CallbackHandler-1.0, LibSharedMedia-3.0, LibStub
 ## IconTexture: Interface\AddOns\DynamicMovementSpeed\logo.tga
 ## SavedVariables: DMSDB
 ## X-Category: Miscellaneous
