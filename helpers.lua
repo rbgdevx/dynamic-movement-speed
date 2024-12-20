@@ -12,7 +12,7 @@ local UnitPowerBarID = UnitPowerBarID
 local wipe = table.wipe
 local sformat = string.format
 
-local LSM = LibStub("LibSharedMedia-3.0")
+local SharedMedia = LibStub("LibSharedMedia-3.0")
 
 NS.Debug = function(...)
   if NS.db and NS.db.global.debug then
@@ -78,7 +78,7 @@ NS.UpdateText = function(frame, speed, isDragonRiding)
 end
 
 NS.UpdateFont = function(frame)
-  frame:SetFont(LSM:Fetch("font", NS.db.global.font), NS.db.global.fontsize, "OUTLINE")
+  frame:SetFont(SharedMedia:Fetch("font", NS.db.global.font), NS.db.global.fontsize, "OUTLINE")
 end
 
 -- Copies table values from src to dst if they don't exist in dst
