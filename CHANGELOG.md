@@ -1,5 +1,9 @@
 # Dynamic Movement Speed
 
+## [v1.2.4](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.2.4) (2025-03-30)
+
+- Update toc
+
 ## [v1.2.3](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.2.3) (2024-12-20)
 
 - Drag and Click control updates to ensure click through when hidden or locked
