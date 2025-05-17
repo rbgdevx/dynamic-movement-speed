@@ -8,9 +8,13 @@ local next = next
 local setmetatable = setmetatable
 local getmetatable = getmetatable
 local UnitPowerBarID = UnitPowerBarID
+local IsFlying = IsFlying
+local IsFalling = IsFalling
 
 local wipe = table.wipe
 local sformat = string.format
+
+local BASE_MOVEMENT_SPEED = BASE_MOVEMENT_SPEED or 7
 
 local SharedMedia = LibStub("LibSharedMedia-3.0")
 
@@ -30,7 +34,7 @@ NS.round = function(x)
 end
 
 NS.getPercent = function(speed)
-  return speed / 7 * 100
+  return (speed / BASE_MOVEMENT_SPEED) * 100
 end
 
 NS.formatSpeed = function(speed, round, isDragonRiding)
@@ -61,8 +65,20 @@ NS.GetSpeedInfo = function()
   return GetUnitSpeed("player")
 end
 
-NS.IsDragonriding = function()
+NS.IsFalling = function()
+  return IsFalling("player")
+end
+
+NS.IsDriving = function()
+  return UnitPowerBarID("player") == 720
+end
+
+NS.IsDragonRiding = function()
   return UnitPowerBarID("player") == 631
+end
+
+NS.IsFlying = function()
+  return IsFlying("player")
 end
 
 NS.UpdateText = function(frame, speed, isDragonRiding)

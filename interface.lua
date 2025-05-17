@@ -2,7 +2,6 @@ local AddonName, NS = ...
 
 local CreateFrame = CreateFrame
 local LibStub = LibStub
-local IsFlying = IsFlying
 
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
@@ -85,7 +84,7 @@ function Interface:CreateInterface()
     local currentSpeed, runSpeed = NS.GetSpeedInfo()
     NS.UpdateFont(Text)
     local showSpeed = currentSpeed == 0 and (NS.db.global.showzero and 0 or runSpeed) or currentSpeed
-    NS.UpdateText(Text, showSpeed, NS.IsDragonriding() and IsFlying())
+    NS.UpdateText(Text, showSpeed, NS.IsDragonRiding() and NS.IsFlying())
 
     Interface.speed = showSpeed
     Interface.text = Text

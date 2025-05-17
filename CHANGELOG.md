@@ -1,5 +1,11 @@
 # Dynamic Movement Speed
 
+## [v1.2.5](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.2.5) (2025-05-17)
+
+- Adding support for D.R.I.V.E. (undermine vehicle)
+- Assigning addon to my own category for organization
+- Update toc
+
 ## [v1.2.4](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.2.4) (2025-03-30)
 
 - Update toc
