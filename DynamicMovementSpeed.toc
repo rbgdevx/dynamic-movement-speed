@@ -1,22 +1,11 @@
-## Interface: 110105
-## Title: DynamicMovementSpeed
-## Version: 1.2.5
+## Interface: 110200
+## Title: Dynamic Movement Speed
+## Version: 1.2.6
 ## Author: RBGDEV
 ## Notes: Provides real time movement speed
-## OptionalDeps: AceConfig-3.0, AceGUI-3.0, AceGUI-3.0-SharedMediaWidgets, CallbackHandler-1.0, LibSharedMedia-3.0, LibStub
-## IconTexture: Interface\AddOns\DynamicMovementSpeed\logo.tga
+## IconTexture: Interface/AddOns/DynamicMovementSpeed/logo.tga
 ## SavedVariables: DMSDB
-## Category-enUS: RBGDEV
-## Category-deDE: RBGDEV
-## Category-esES: RBGDEV
-## Category-esMX: RBGDEV
-## Category-frFR: RBGDEV
-## Category-itIT: RBGDEV
-## Category-koKR: RBGDEV
-## Category-ptBR: RBGDEV
-## Category-ruRU: RBGDEV
-## Category-zhCN: RBGDEV
-## Category-zhTW: RBGDEV
+## Category: RBGDEV
 ## X-Category: Miscellaneous
 ## X-License: All Rights Reserved
 ## X-Website: https://www.curseforge.com/wow/addons/dynamic-movement-speed
