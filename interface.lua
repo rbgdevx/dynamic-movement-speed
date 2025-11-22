@@ -84,7 +84,7 @@ function Interface:CreateInterface()
     local currentSpeed, runSpeed = NS.GetSpeedInfo()
     NS.UpdateFont(Text)
     local showSpeed = currentSpeed == 0 and (NS.db.global.showzero and 0 or runSpeed) or currentSpeed
-    NS.UpdateText(Text, showSpeed, NS.IsDragonRiding() and NS.IsFlying())
+    NS.UpdateText(Text, showSpeed, NS.db.global.decimals, NS.db.global.round)
 
     Interface.speed = showSpeed
     Interface.text = Text

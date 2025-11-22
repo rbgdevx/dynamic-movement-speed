@@ -37,16 +37,29 @@ NS.getPercent = function(speed)
   return (speed / BASE_MOVEMENT_SPEED) * 100
 end
 
-NS.formatSpeed = function(speed, round, isDragonRiding)
-  if isDragonRiding then
-    return sformat("%.0f%%", speed)
+NS.formatSpeed = function(speed, decimals, round)
+  if round then
+    local percent = NS.getPercent(speed)
+    local rounded = NS.round(percent)
+    local zeroDecimalsFormat = "%.0f%%"
+    return sformat(zeroDecimalsFormat, rounded)
   else
-    if round then
-      local percent = NS.getPercent(speed)
-      local rounded = NS.round(percent)
-      return sformat("%d%%", rounded)
-    else
-      return sformat("%.1f%%", NS.getPercent(speed))
+    local singleDecimalFormat = "%.1f%%"
+    local twoDecimalFormat = "%.2f%%"
+    local threeDecimalFormat = "%.3f%%"
+    local fourDecimalFormat = "%.4f%%"
+    local fiveDecimalFormat = "%.5f%%"
+
+    if decimals == 1 then
+      return sformat(singleDecimalFormat, NS.getPercent(speed))
+    elseif decimals == 2 then
+      return sformat(twoDecimalFormat, NS.getPercent(speed))
+    elseif decimals == 3 then
+      return sformat(threeDecimalFormat, NS.getPercent(speed))
+    elseif decimals == 4 then
+      return sformat(fourDecimalFormat, NS.getPercent(speed))
+    elseif decimals == 5 then
+      return sformat(fiveDecimalFormat, NS.getPercent(speed))
     end
   end
 end
@@ -81,8 +94,8 @@ NS.IsFlying = function()
   return IsFlying("player")
 end
 
-NS.UpdateText = function(frame, speed, isDragonRiding)
-  local txt = NS.formatSpeed(speed, NS.db.global.round, isDragonRiding)
+NS.UpdateText = function(frame, speed, decimals, round)
+  local txt = NS.formatSpeed(speed, decimals, round)
   if NS.db.global.showlabel then
     if NS.db.global.labeltext then
       local speedWithLabel = sformat("%s %s", NS.db.global.labeltext, txt)

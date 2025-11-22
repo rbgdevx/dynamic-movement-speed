@@ -2,7 +2,6 @@ local AddonName, NS = ...
 
 local CopyTable = CopyTable
 local next = next
-local IsFlying = IsFlying
 local LibStub = LibStub
 
 local AceConfig = LibStub("AceConfig-3.0")
@@ -44,7 +43,7 @@ NS.AceConfig = {
       order = 2,
       set = function(_, val)
         NS.db.global.round = val
-        NS.UpdateText(NS.Interface.text, NS.Interface.speed, NS.IsDragonriding() and IsFlying())
+        NS.UpdateText(NS.Interface.text, NS.Interface.speed, NS.db.global.decimals, val)
       end,
       get = function(_)
         return NS.db.global.round
@@ -60,7 +59,7 @@ NS.AceConfig = {
         local currentSpeed, runSpeed = NS.GetSpeedInfo()
         local staticSpeed = NS.db.global.showzero and 0 or runSpeed
         local showSpeed = (currentSpeed == 0 or NS.Interface.speed == 0) and staticSpeed or NS.Interface.speed
-        NS.UpdateText(NS.Interface.text, showSpeed, NS.IsDragonriding() and IsFlying())
+        NS.UpdateText(NS.Interface.text, showSpeed, NS.db.global.decimals, NS.db.global.round)
       end,
       get = function(_)
         return NS.db.global.showzero
@@ -73,7 +72,7 @@ NS.AceConfig = {
       order = 4,
       set = function(_, val)
         NS.db.global.showlabel = val
-        NS.UpdateText(NS.Interface.text, NS.Interface.speed, NS.IsDragonriding() and IsFlying())
+        NS.UpdateText(NS.Interface.text, NS.Interface.speed, NS.db.global.decimals, NS.db.global.round)
       end,
       get = function(_)
         return NS.db.global.showlabel
@@ -89,7 +88,7 @@ NS.AceConfig = {
       end,
       set = function(_, val)
         NS.db.global.labeltext = val
-        NS.UpdateText(NS.Interface.text, NS.Interface.speed, NS.IsDragonriding() and IsFlying())
+        NS.UpdateText(NS.Interface.text, NS.Interface.speed, NS.db.global.decimals, NS.db.global.round)
         NS.Interface.textFrame:SetWidth(NS.Interface.text:GetStringWidth())
         NS.Interface.textFrame:SetHeight(NS.Interface.text:GetStringHeight())
       end,
@@ -97,11 +96,33 @@ NS.AceConfig = {
         return NS.db.global.labeltext
       end,
     },
+    decimals = {
+      type = "range",
+      name = "Decimals",
+      desc = "The number of decimal places to show.",
+      width = "double",
+      disabled = function()
+        return NS.db.global.round
+      end,
+      min = 1,
+      max = 5,
+      step = 1,
+      order = 6,
+      set = function(_, val)
+        NS.db.global.decimals = val
+        NS.UpdateText(NS.Interface.text, NS.Interface.speed, val, NS.db.global.round)
+        NS.Interface.textFrame:SetWidth(NS.Interface.text:GetStringWidth())
+        NS.Interface.textFrame:SetHeight(NS.Interface.text:GetStringHeight())
+      end,
+      get = function(_)
+        return NS.db.global.decimals
+      end,
+    },
     fontsize = {
       type = "range",
       name = "Font Size",
       width = "double",
-      order = 6,
+      order = 7,
       min = 2,
       max = 64,
       step = 1,
@@ -115,13 +136,19 @@ NS.AceConfig = {
         return NS.db.global.fontsize
       end,
     },
+    spacer1 = {
+      name = " ",
+      type = "description",
+      order = 8,
+      width = "full",
+    },
     font = {
       type = "select",
       name = "Font",
-      width = "double",
+      width = 1.5,
       dialogControl = "LSM30_Font",
       values = SharedMedia:HashTable("font"),
-      order = 7,
+      order = 9,
       set = function(_, val)
         NS.db.global.font = val
         NS.UpdateFont(NS.Interface.text)
@@ -132,11 +159,17 @@ NS.AceConfig = {
         return NS.db.global.font
       end,
     },
+    spacer2 = {
+      name = "",
+      type = "description",
+      order = 10,
+      width = 0.1,
+    },
     color = {
       type = "color",
       name = "Color",
-      width = "double",
-      order = 8,
+      width = 0.5,
+      order = 11,
       hasAlpha = true,
       set = function(_, val1, val2, val3, val4)
         NS.db.global.color.r = val1
@@ -149,6 +182,7 @@ NS.AceConfig = {
         return NS.db.global.color.r, NS.db.global.color.g, NS.db.global.color.b, NS.db.global.color.a
       end,
     },
+    spacing3 = { type = "description", order = 12, name = " ", width = "full" },
     reset = {
       name = "Reset Everything",
       type = "execute",

@@ -335,8 +335,8 @@ do
     local correctSpeed = currentSpeed
 
     -- if isFalling then
-    -- 	DMS:GetFallingSpeed()
-    -- 	correctSpeed = dynamicSpeed
+    --  DMS:GetFallingSpeed()
+    --  correctSpeed = dynamicSpeed
     -- end
 
     if moving and isDriving then
@@ -367,7 +367,7 @@ do
       end
 
       NS.Interface.speed = speedPercent
-      NS.UpdateText(Interface.text, speedPercent, isDragonRiding and isFlying)
+      NS.UpdateText(Interface.text, speedPercent, NS.db.global.decimals, NS.db.global.round)
     end
   end
 
@@ -380,7 +380,7 @@ do
     local currentSpeed, runSpeed = NS.GetSpeedInfo()
 
     local showSpeed = currentSpeed == 0 and (NS.db.global.showzero and 0 or runSpeed) or currentSpeed
-    NS.UpdateText(Interface.text, showSpeed, isDragonRiding and isFlying)
+    NS.UpdateText(Interface.text, showSpeed, NS.db.global.decimals, NS.db.global.round)
 
     if not playerMovingFrame then
       playerMovingFrame = CreateFrame("Frame")
@@ -390,7 +390,7 @@ do
       local runSpeedPercent = runSpeed
       showSpeed = currentSpeed == 0 and (NS.db.global.showzero and 0 or runSpeedPercent) or currentSpeed
       NS.Interface.speed = showSpeed
-      NS.UpdateText(Interface.text, showSpeed, isDragonRiding and isFlying)
+      NS.UpdateText(Interface.text, showSpeed, NS.db.global.decimals, NS.db.global.round)
     end
 
     playerMovingFrame:SetScript("OnUpdate", PlayerMoveUpdate)
