@@ -21,7 +21,6 @@ local CreateFrame = CreateFrame
 ---@field showzero boolean
 ---@field font string
 ---@field decimals number
----@field round boolean
 ---@field color ColorArray
 ---@field position PositionArray
 ---@field debug boolean
@@ -63,9 +62,8 @@ NS.DefaultDatabase = {
     showlabel = true,
     showzero = false,
     fontsize = 15,
-    decimals = 2,
+    decimals = 1,
     font = "Friz Quadrata TT",
-    round = true,
     color = {
       r = 1,
       g = 1,

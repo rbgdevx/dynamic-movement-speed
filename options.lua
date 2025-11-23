@@ -36,30 +36,17 @@ NS.AceConfig = {
         return NS.db.global.lock
       end,
     },
-    round = {
-      name = "Round the percentage value",
-      type = "toggle",
-      width = "double",
-      order = 2,
-      set = function(_, val)
-        NS.db.global.round = val
-        NS.UpdateText(NS.Interface.text, NS.Interface.speed, NS.db.global.decimals, val)
-      end,
-      get = function(_)
-        return NS.db.global.round
-      end,
-    },
     showzero = {
       name = "Show 0% when NOT moving, instead of run speed",
       type = "toggle",
       width = "double",
-      order = 3,
+      order = 2,
       set = function(_, val)
         NS.db.global.showzero = val
         local currentSpeed, runSpeed = NS.GetSpeedInfo()
         local staticSpeed = NS.db.global.showzero and 0 or runSpeed
         local showSpeed = (currentSpeed == 0 or NS.Interface.speed == 0) and staticSpeed or NS.Interface.speed
-        NS.UpdateText(NS.Interface.text, showSpeed, NS.db.global.decimals, NS.db.global.round)
+        NS.UpdateText(NS.Interface.text, showSpeed, NS.db.global.decimals, NS.IsDragonRiding() and NS.IsFlying())
       end,
       get = function(_)
         return NS.db.global.showzero
@@ -69,10 +56,10 @@ NS.AceConfig = {
       name = "Enable label text",
       type = "toggle",
       width = "double",
-      order = 4,
+      order = 3,
       set = function(_, val)
         NS.db.global.showlabel = val
-        NS.UpdateText(NS.Interface.text, NS.Interface.speed, NS.db.global.decimals, NS.db.global.round)
+        NS.UpdateText(NS.Interface.text, NS.Interface.speed, NS.db.global.decimals, NS.IsDragonRiding() and NS.IsFlying())
       end,
       get = function(_)
         return NS.db.global.showlabel
@@ -82,13 +69,13 @@ NS.AceConfig = {
       type = "input",
       name = "Label Text",
       width = "double",
-      order = 5,
+      order = 4,
       disabled = function()
         return not NS.db.global.showlabel
       end,
       set = function(_, val)
         NS.db.global.labeltext = val
-        NS.UpdateText(NS.Interface.text, NS.Interface.speed, NS.db.global.decimals, NS.db.global.round)
+        NS.UpdateText(NS.Interface.text, NS.Interface.speed, NS.db.global.decimals, NS.IsDragonRiding() and NS.IsFlying())
         NS.Interface.textFrame:SetWidth(NS.Interface.text:GetStringWidth())
         NS.Interface.textFrame:SetHeight(NS.Interface.text:GetStringHeight())
       end,
@@ -101,16 +88,13 @@ NS.AceConfig = {
       name = "Decimals",
       desc = "The number of decimal places to show.",
       width = "double",
-      disabled = function()
-        return NS.db.global.round
-      end,
-      min = 1,
+      min = 0,
       max = 5,
       step = 1,
-      order = 6,
+      order = 5,
       set = function(_, val)
         NS.db.global.decimals = val
-        NS.UpdateText(NS.Interface.text, NS.Interface.speed, val, NS.db.global.round)
+        NS.UpdateText(NS.Interface.text, NS.Interface.speed, val, NS.IsDragonRiding() and NS.IsFlying())
         NS.Interface.textFrame:SetWidth(NS.Interface.text:GetStringWidth())
         NS.Interface.textFrame:SetHeight(NS.Interface.text:GetStringHeight())
       end,
@@ -122,7 +106,7 @@ NS.AceConfig = {
       type = "range",
       name = "Font Size",
       width = "double",
-      order = 7,
+      order = 6,
       min = 2,
       max = 64,
       step = 1,
@@ -139,7 +123,7 @@ NS.AceConfig = {
     spacer1 = {
       name = " ",
       type = "description",
-      order = 8,
+      order = 7,
       width = "full",
     },
     font = {
@@ -148,7 +132,7 @@ NS.AceConfig = {
       width = 1.5,
       dialogControl = "LSM30_Font",
       values = SharedMedia:HashTable("font"),
-      order = 9,
+      order = 8,
       set = function(_, val)
         NS.db.global.font = val
         NS.UpdateFont(NS.Interface.text)
@@ -162,14 +146,14 @@ NS.AceConfig = {
     spacer2 = {
       name = "",
       type = "description",
-      order = 10,
+      order = 9,
       width = 0.1,
     },
     color = {
       type = "color",
       name = "Color",
       width = 0.5,
-      order = 11,
+      order = 10,
       hasAlpha = true,
       set = function(_, val1, val2, val3, val4)
         NS.db.global.color.r = val1
@@ -182,7 +166,7 @@ NS.AceConfig = {
         return NS.db.global.color.r, NS.db.global.color.g, NS.db.global.color.b, NS.db.global.color.a
       end,
     },
-    spacing3 = { type = "description", order = 12, name = " ", width = "full" },
+    spacing3 = { type = "description", order = 11, name = " ", width = "full" },
     reset = {
       name = "Reset Everything",
       type = "execute",

@@ -55,7 +55,7 @@ do
   local lastAccel = 0
 
   local maxSamples = 5
-  local updatePeriod = 1 / 10
+  local updatePeriod = 1 / 20
 
   function DMS:GetFallingSpeed()
     local now = GetTime()
@@ -145,7 +145,7 @@ do
   local lastAccel = 0
 
   local maxSamples = 5
-  local updatePeriod = 1 / 10
+  local updatePeriod = 1 / 20
 
   function DMS:GetDrivingSpeed()
     local now = GetTime()
@@ -235,19 +235,31 @@ do
   local thrillBuff = 377234
   local lastT = 0
   local samples = 0
-  local smoothSpeed = 0
   local lastSpeed = 0
   local smoothAccel = 0
-  local lastAccel = 0
   local speedshowunits = true
+  local isSlowSkyriding = true
 
-  local maxSamples = 5
+  local maxPassiveGlideSpeed = 65
+  local slowSkyridingRatio = 705 / 830
+  local maxSamples = 2
   local ascentDuration = 3.5
-  local updatePeriod = 1 / 10
-  local speedunits = 2
+  local updatePeriod = 1 / 20
+  local speedUnits = 2
+
+  local fastFlyingZones = {
+    [2444] = true, -- Dragon Isles
+    [2454] = true, -- Zaralek Cavern
+    [2548] = true, -- Emerald Dream
+
+    [2516] = true, -- Nokhud Offensive
+
+    [2522] = true, -- Vault of the Incarnates
+    [2569] = true, -- Aberrus, the Shadowed Crucible
+}
 
   local speedTextFormat, speedTextFactor = "", 1
-  if speedunits == 1 then
+  if speedUnits == 1 then
     speedTextFormat = speedshowunits and "%.1fyd/s" or "%.1f"
   else
     speedTextFormat = speedshowunits and "%.0f%%" or "%.0f"
@@ -258,6 +270,7 @@ do
   local isBoosting = false
 
   function DMS:GetDragonRidingSpeed()
+    -- Time
     local time = GetTime()
 
     -- Delta time
@@ -271,43 +284,41 @@ do
     isDriving = NS.IsDriving()
     isFlying = NS.IsFlying()
 
+    isSlowSkyriding = not fastFlyingZones[select(8, GetInstanceInfo())]
+
     -- Get flying speed
-    local _, _, forwardSpeed = GetGlidingInfo()
+    local isGliding, _, forwardSpeed = GetGlidingInfo()
     local speed = forwardSpeed
 
     local thrill = GetPlayerAuraBySpellID(thrillBuff)
-    local boosting = thrill and time < ascentStart + ascentDuration or false
+    local boosting = thrill and time < ascentStart + ascentDuration
+
+    local adjustedSpeed = speed
+    if isSlowSkyriding then
+      adjustedSpeed = adjustedSpeed / slowSkyridingRatio
+    end
 
     -- Compute smooth speed
     samples = mmin(maxSamples, samples + 1)
     local lastWeight = (samples - 1) / samples
     local newWeight = 1 / samples
 
-    smoothSpeed = speed
-    local newAccel = smoothSpeed - lastSpeed
-    lastSpeed = smoothSpeed
+    local newAccel = (adjustedSpeed - lastSpeed) / dt
+    lastSpeed = adjustedSpeed
 
     -- Compute smooth acceleration
     smoothAccel = smoothAccel * lastWeight + newAccel * newWeight
-    if speed > 63 then
-      -- Don't track negative acceleration when boosting
-      smoothAccel = mmax(0, smoothAccel)
+    if adjustedSpeed >= maxPassiveGlideSpeed or not isGliding then
+      smoothAccel = 0 -- Don't track when boosting or on ground
+      samples = 0
     end
-    if not isFlying then
-      smoothAccel = 0 -- Don't track acceleration on ground
-    end
-    lastAccel = smoothAccel
-    -- NS.Debug("smoothAccel", smoothAccel)
-    -- NS.Debug("lastAccel", lastAccel)
 
     -- Update display variables
     isBoosting = boosting
     isThrill = not not thrill
-    -- NS.Debug("isBoosting", isBoosting)
-    -- NS.Debug("isThrill", isThrill)
 
-    dynamicSpeed = smoothSpeed * speedTextFactor
-    speedtext = smoothSpeed < 1 and "" or sformat(speedTextFormat, dynamicSpeed)
+    dynamicSpeed = speed * speedTextFactor
+    speedtext = speed < 1 and "" or sformat(speedTextFormat, dynamicSpeed)
   end
 end
 
@@ -367,7 +378,7 @@ do
       end
 
       NS.Interface.speed = speedPercent
-      NS.UpdateText(Interface.text, speedPercent, NS.db.global.decimals, NS.db.global.round)
+      NS.UpdateText(Interface.text, speedPercent, NS.db.global.decimals, isDragonRiding and isFlying)
     end
   end
 
@@ -380,7 +391,7 @@ do
     local currentSpeed, runSpeed = NS.GetSpeedInfo()
 
     local showSpeed = currentSpeed == 0 and (NS.db.global.showzero and 0 or runSpeed) or currentSpeed
-    NS.UpdateText(Interface.text, showSpeed, NS.db.global.decimals, NS.db.global.round)
+    NS.UpdateText(Interface.text, showSpeed, NS.db.global.decimals, isDragonRiding and isFlying)
 
     if not playerMovingFrame then
       playerMovingFrame = CreateFrame("Frame")
@@ -390,7 +401,7 @@ do
       local runSpeedPercent = runSpeed
       showSpeed = currentSpeed == 0 and (NS.db.global.showzero and 0 or runSpeedPercent) or currentSpeed
       NS.Interface.speed = showSpeed
-      NS.UpdateText(Interface.text, showSpeed, NS.db.global.decimals, NS.db.global.round)
+      NS.UpdateText(Interface.text, showSpeed, NS.db.global.decimals, isDragonRiding and isFlying)
     end
 
     playerMovingFrame:SetScript("OnUpdate", PlayerMoveUpdate)

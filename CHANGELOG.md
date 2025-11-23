@@ -1,5 +1,11 @@
 # Dynamic Movement Speed
 
+## [v1.2.8](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.2.8) (2025-11-22)
+
+- Fixing dragon riding percentage
+- Updating dragon riding algorithm
+- Removing round option in favor of a 0 decimal option
+
 ## [v1.2.7](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.2.7) (2025-11-22)
 
 - Add new option to choose decimal amount

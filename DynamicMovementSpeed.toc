@@ -1,6 +1,6 @@
 ## Interface: 110205
 ## Title: Dynamic Movement Speed
-## Version: 1.2.7
+## Version: 1.2.8
 ## Author: RBGDEV
 ## Notes: Provides real time movement speed
 ## IconTexture: Interface/AddOns/DynamicMovementSpeed/logo.tga
