@@ -22,7 +22,7 @@ NS.AceConfig = {
     lock = {
       name = "Lock the text into place",
       type = "toggle",
-      width = "double",
+      width = "full",
       order = 1,
       set = function(_, val)
         NS.db.global.lock = val
@@ -39,7 +39,7 @@ NS.AceConfig = {
     showzero = {
       name = "Show 0% when NOT moving, instead of run speed",
       type = "toggle",
-      width = "double",
+      width = "full",
       order = 2,
       set = function(_, val)
         NS.db.global.showzero = val
@@ -55,11 +55,16 @@ NS.AceConfig = {
     showlabel = {
       name = "Enable label text",
       type = "toggle",
-      width = "double",
+      width = "full",
       order = 3,
       set = function(_, val)
         NS.db.global.showlabel = val
-        NS.UpdateText(NS.Interface.text, NS.Interface.speed, NS.db.global.decimals, NS.IsDragonRiding() and NS.IsFlying())
+        NS.UpdateText(
+          NS.Interface.text,
+          NS.Interface.speed,
+          NS.db.global.decimals,
+          NS.IsDragonRiding() and NS.IsFlying()
+        )
       end,
       get = function(_)
         return NS.db.global.showlabel
@@ -75,7 +80,12 @@ NS.AceConfig = {
       end,
       set = function(_, val)
         NS.db.global.labeltext = val
-        NS.UpdateText(NS.Interface.text, NS.Interface.speed, NS.db.global.decimals, NS.IsDragonRiding() and NS.IsFlying())
+        NS.UpdateText(
+          NS.Interface.text,
+          NS.Interface.speed,
+          NS.db.global.decimals,
+          NS.IsDragonRiding() and NS.IsFlying()
+        )
         NS.Interface.textFrame:SetWidth(NS.Interface.text:GetStringWidth())
         NS.Interface.textFrame:SetHeight(NS.Interface.text:GetStringHeight())
       end,
@@ -83,6 +93,7 @@ NS.AceConfig = {
         return NS.db.global.labeltext
       end,
     },
+    spacer1 = { name = " ", type = "description", order = 5, width = "full" },
     decimals = {
       type = "range",
       name = "Decimals",
@@ -91,7 +102,7 @@ NS.AceConfig = {
       min = 0,
       max = 5,
       step = 1,
-      order = 5,
+      order = 6,
       set = function(_, val)
         NS.db.global.decimals = val
         NS.UpdateText(NS.Interface.text, NS.Interface.speed, val, NS.IsDragonRiding() and NS.IsFlying())
@@ -102,11 +113,12 @@ NS.AceConfig = {
         return NS.db.global.decimals
       end,
     },
+    spacer2 = { name = " ", type = "description", order = 7, width = "full" },
     fontsize = {
       type = "range",
       name = "Font Size",
       width = "double",
-      order = 6,
+      order = 8,
       min = 2,
       max = 64,
       step = 1,
@@ -120,19 +132,14 @@ NS.AceConfig = {
         return NS.db.global.fontsize
       end,
     },
-    spacer1 = {
-      name = " ",
-      type = "description",
-      order = 7,
-      width = "full",
-    },
+    spacer3 = { name = " ", type = "description", order = 9, width = "full" },
     font = {
       type = "select",
       name = "Font",
       width = 1.5,
       dialogControl = "LSM30_Font",
       values = SharedMedia:HashTable("font"),
-      order = 8,
+      order = 10,
       set = function(_, val)
         NS.db.global.font = val
         NS.UpdateFont(NS.Interface.text)
@@ -143,17 +150,12 @@ NS.AceConfig = {
         return NS.db.global.font
       end,
     },
-    spacer2 = {
-      name = "",
-      type = "description",
-      order = 9,
-      width = 0.1,
-    },
+    spacer4 = { name = "", type = "description", order = 11, width = 0.1 },
     color = {
       type = "color",
       name = "Color",
       width = 0.5,
-      order = 10,
+      order = 12,
       hasAlpha = true,
       set = function(_, val1, val2, val3, val4)
         NS.db.global.color.r = val1
@@ -166,7 +168,7 @@ NS.AceConfig = {
         return NS.db.global.color.r, NS.db.global.color.g, NS.db.global.color.b, NS.db.global.color.a
       end,
     },
-    spacing3 = { type = "description", order = 11, name = " ", width = "full" },
+    spacer5 = { type = "description", order = 13, name = " ", width = "full" },
     reset = {
       name = "Reset Everything",
       type = "execute",

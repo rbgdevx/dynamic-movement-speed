@@ -7,9 +7,12 @@ local IsPlayerMoving = IsPlayerMoving
 local GetTime = GetTime
 local UnitIsUnit = UnitIsUnit
 local GetUnitSpeed = GetUnitSpeed
+local issecretvalue = issecretvalue or function(_)
+  return false
+end
 
 local mmin = math.min
-local mmax = math.max
+-- local mmax = math.max
 local sformat = string.format
 
 local After = C_Timer.After
@@ -256,7 +259,7 @@ do
 
     [2522] = true, -- Vault of the Incarnates
     [2569] = true, -- Aberrus, the Shadowed Crucible
-}
+  }
 
   local speedTextFormat, speedTextFactor = "", 1
   if speedUnits == 1 then
@@ -481,6 +484,10 @@ function DMS:UNIT_POWER_BAR_HIDE(unitTarget)
 end
 
 function DMS:UNIT_SPELLCAST_SUCCEEDED(unitTarget, _, spellID)
+  if issecretvalue(spellID) then
+    return
+  end
+
   if UnitIsUnit(unitTarget, "player") then
     if spellID == ascentSpell or spellID == boostSpell then
       ascentStart = GetTime()

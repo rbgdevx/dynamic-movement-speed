@@ -1,5 +1,12 @@
 # Dynamic Movement Speed
 
+## [v1.3.0](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.3.0) (2025-12-31)
+
+- Update libs for midnight
+- Handling secret values on spell detection
+- Handling secret values for moving frames while in-combat or in instances
+- General cleanup
+
 ## [v1.2.8](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.2.8) (2025-11-22)
 
 - Fixing dragon riding percentage
