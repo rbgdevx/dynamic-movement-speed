@@ -1,5 +1,9 @@
 # Dynamic Movement Speed
 
+## [v1.3.1](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.3.1) (2026-03-01)
+
+- Removing old secret var check as its no longer needed
+
 ## [v1.3.0](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.3.0) (2025-12-31)
 
 - Update libs for midnight
