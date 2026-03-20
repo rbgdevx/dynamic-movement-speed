@@ -11,12 +11,15 @@ local UnitPowerBarID = UnitPowerBarID
 local IsFlying = IsFlying
 local IsFalling = IsFalling
 
-local wipe = table.wipe
+local mceil = math.ceil
+local mfloor = math.floor
 local sformat = string.format
 
-local BASE_MOVEMENT_SPEED = BASE_MOVEMENT_SPEED or 7
+local GetGlidingInfo = C_PlayerInfo.GetGlidingInfo
 
 local SharedMedia = LibStub("LibSharedMedia-3.0")
+
+local BASE_MOVEMENT_SPEED = BASE_MOVEMENT_SPEED or 7
 
 NS.Debug = function(...)
   if NS.db and NS.db.global.debug then
@@ -25,11 +28,11 @@ NS.Debug = function(...)
 end
 
 NS.round = function(x)
-  local decimal = x - math.floor(x)
+  local decimal = x - mfloor(x)
   if decimal < 0.5 then
-    return math.floor(x)
+    return mfloor(x)
   else
-    return math.ceil(x)
+    return mceil(x)
   end
 end
 
@@ -84,7 +87,8 @@ NS.IsDriving = function()
 end
 
 NS.IsDragonRiding = function()
-  return UnitPowerBarID("player") == 631
+  local _, canGlide = GetGlidingInfo()
+  return canGlide
 end
 
 NS.IsFlying = function()
@@ -167,27 +171,4 @@ NS.CleanupDB = function(src, dst)
     end
   end
   return dst
-end
-
--- Pool for reusing tables. (Garbage collector isn't ran in combat unless max garbage is reached, which causes fps drops)
-do
-  local pool = {}
-
-  NS.NewTable = function()
-    local t = next(pool) or {}
-    pool[t] = nil -- remove from pool
-    return t
-  end
-
-  NS.RemoveTable = function(tbl)
-    if tbl then
-      pool[wipe(tbl)] = true -- add to pool, wipe returns pointer to tbl here
-    end
-  end
-
-  NS.ReleaseTables = function()
-    if next(pool) then
-      pool = {}
-    end
-  end
 end

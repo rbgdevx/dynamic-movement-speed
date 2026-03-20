@@ -38,6 +38,7 @@ local trueSpeedPercent = 0
 local MAIN_EVENTS = {
   "PLAYER_ENTERING_WORLD",
   "PLAYER_MOUNT_DISPLAY_CHANGED",
+  "PLAYER_CAN_GLIDE_CHANGED",
   "UNIT_POWER_BAR_SHOW",
   "UNIT_POWER_BAR_HIDE",
   "UNIT_SPELLCAST_SUCCEEDED",
@@ -83,7 +84,7 @@ do
     -- local isGliding, canGlide, forwardSpeed = GetGlidingInfo()
     -- local base = isGliding and forwardSpeed or currentSpeed
 
-    print(currentX, currentY, currentZ)
+    -- print(currentX, currentY, currentZ)
 
     -- Delta position
     local dz = currentZ - lastZ
@@ -114,9 +115,9 @@ do
     end
 
     -- Optional: show only falling
-    if verticalSpeed < -1 then
-      print(string.format("Falling at %.2f yd/s", -verticalSpeed))
-    end
+    -- if verticalSpeed < -1 then
+    -- 	print(string.format("Falling at %.2f yd/s", -verticalSpeed))
+    -- end
 
     -- Convert to % based on base speed (use absolute value)
     local percentSpeed = (math.abs(smoothSpeed) / BASE_MOVEMENT_SPEED) * 100
@@ -125,7 +126,7 @@ do
     percentSpeed = math.min(percentSpeed, 500)
 
     -- Optional debug print
-    print(string.format("Falling at %.2f yd/s (%d%%)", -smoothSpeed, percentSpeed))
+    -- print(string.format("Falling at %.2f yd/s (%d%%)", -smoothSpeed, percentSpeed))
 
     -- Convert to % movement speed
     dynamicSpeed = math.abs(smoothSpeed)
@@ -462,22 +463,23 @@ end
 
 function DMS:UNIT_POWER_BAR_SHOW(unitTarget)
   if UnitIsUnit(unitTarget, "player") then
-    isFalling = NS.IsFalling()
     isDriving = NS.IsDriving()
-    isDragonRiding = NS.IsDragonRiding()
-    isFlying = NS.IsFlying()
     self:WatchForPlayerMoving()
   end
 end
 
 function DMS:UNIT_POWER_BAR_HIDE(unitTarget)
   if UnitIsUnit(unitTarget, "player") then
-    isFalling = NS.IsFalling()
     isDriving = NS.IsDriving()
-    isDragonRiding = NS.IsDragonRiding()
-    isFlying = NS.IsFlying()
     self:WatchForPlayerMoving()
   end
+end
+
+function DMS:PLAYER_CAN_GLIDE_CHANGED(canGlide)
+  isFalling = NS.IsFalling()
+  isDragonRiding = canGlide
+  isFlying = NS.IsFlying()
+  self:WatchForPlayerMoving()
 end
 
 function DMS:UNIT_SPELLCAST_SUCCEEDED(unitTarget, _, spellID)
