@@ -1,5 +1,9 @@
 # Dynamic Movement Speed
 
+## [v1.3.3](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.3.3) (2026-04-07)
+
+- Fixing small bug introduced from recent blizzard api changes
+
 ## [v1.3.2](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.3.2) (2026-03-20)
 
 - Fixing dragon riding implementation since blizzard removed the vigor ui a while back

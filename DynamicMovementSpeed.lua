@@ -41,7 +41,6 @@ local MAIN_EVENTS = {
   "PLAYER_CAN_GLIDE_CHANGED",
   "UNIT_POWER_BAR_SHOW",
   "UNIT_POWER_BAR_HIDE",
-  "UNIT_SPELLCAST_SUCCEEDED",
 }
 
 -- Falling
@@ -483,12 +482,11 @@ function DMS:PLAYER_CAN_GLIDE_CHANGED(canGlide)
 end
 
 function DMS:UNIT_SPELLCAST_SUCCEEDED(unitTarget, _, spellID)
-  if UnitIsUnit(unitTarget, "player") then
-    if spellID == ascentSpell or spellID == boostSpell then
-      ascentStart = GetTime()
-    end
+  if spellID == ascentSpell or spellID == boostSpell then
+    ascentStart = GetTime()
   end
 end
+DMSFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
 
 function DMS:PLAYER_LOGIN()
   DMSFrame:UnregisterEvent("PLAYER_LOGIN")
