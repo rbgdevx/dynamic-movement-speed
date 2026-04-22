@@ -343,6 +343,25 @@ do
     end
 
     local currentSpeed, runSpeed = NS.GetSpeedInfo()
+
+    -- Secret context: blank once and bail, keep OnUpdate running so the
+    -- next real-data tick can restore the display.
+    if currentSpeed == nil then
+      if playerMovingFrame and not playerMovingFrame.blanked then
+        Interface.text:SetText("")
+        playerMovingFrame.blanked = true
+        playerMovingFrame.speed = nil
+      end
+      return
+    end
+
+    -- Just came out of a secret context: invalidate the cached speed so
+    -- the comparison below fires and redraws.
+    if playerMovingFrame and playerMovingFrame.blanked then
+      playerMovingFrame.blanked = false
+      playerMovingFrame.speed = nil
+    end
+
     local correctSpeed = currentSpeed
 
     -- if isFalling then
@@ -390,18 +409,25 @@ do
 
     local currentSpeed, runSpeed = NS.GetSpeedInfo()
 
-    local showSpeed = currentSpeed == 0 and (NS.db.global.showzero and 0 or runSpeed) or currentSpeed
-    NS.UpdateText(Interface.text, showSpeed, NS.db.global.decimals, isDragonRiding and isFlying)
+    if currentSpeed == nil then
+      Interface.text:SetText("")
+    else
+      local showSpeed = currentSpeed == 0 and (NS.db.global.showzero and 0 or runSpeed) or currentSpeed
+      NS.UpdateText(Interface.text, showSpeed, NS.db.global.decimals, isDragonRiding and isFlying)
+    end
 
     if not playerMovingFrame then
       playerMovingFrame = CreateFrame("Frame")
       --- @cast playerMovingFrame PlayerMovingFrame
       playerMovingFrame.speed = currentSpeed
+      playerMovingFrame.blanked = currentSpeed == nil
 
-      local runSpeedPercent = runSpeed
-      showSpeed = currentSpeed == 0 and (NS.db.global.showzero and 0 or runSpeedPercent) or currentSpeed
-      NS.Interface.speed = showSpeed
-      NS.UpdateText(Interface.text, showSpeed, NS.db.global.decimals, isDragonRiding and isFlying)
+      if currentSpeed ~= nil then
+        local runSpeedPercent = runSpeed
+        local showSpeed = currentSpeed == 0 and (NS.db.global.showzero and 0 or runSpeedPercent) or currentSpeed
+        NS.Interface.speed = showSpeed
+        NS.UpdateText(Interface.text, showSpeed, NS.db.global.decimals, isDragonRiding and isFlying)
+      end
     end
 
     playerMovingFrame:SetScript("OnUpdate", PlayerMoveUpdate)
@@ -457,7 +483,9 @@ end
 function DMS:PLAYER_MOUNT_DISPLAY_CHANGED()
   local _, runSpeed = NS.GetSpeedInfo()
   lastUpdatedSpeed = runSpeed
-  After(0, checkSpeed)
+  if runSpeed ~= nil then
+    After(0, checkSpeed)
+  end
 end
 
 function DMS:UNIT_POWER_BAR_SHOW(unitTarget)

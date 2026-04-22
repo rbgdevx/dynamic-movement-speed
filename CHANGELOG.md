@@ -1,5 +1,9 @@
 # Dynamic Movement Speed
 
+## [v1.3.4](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.3.4) (2026-04-22)
+
+- Protecting against secret values for with movement speed in pvp and other instances and events
+
 ## [v1.3.3](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.3.3) (2026-04-07)
 
 - Fixing small bug introduced from recent blizzard api changes

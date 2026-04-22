@@ -2,6 +2,9 @@ local _, NS = ...
 
 local LibStub = LibStub
 local GetUnitSpeed = GetUnitSpeed
+local issecretvalue = issecretvalue or function()
+  return false
+end
 local pairs = pairs
 local type = type
 local next = next
@@ -75,7 +78,14 @@ NS.GetSpeedInfo = function()
   -- swimSpeed: number
   -- the maximum speed while swimming, in yards per second (not tested but it should be the same as the flying mount)
   --]]
-  return GetUnitSpeed("player")
+  local currentSpeed, runSpeed = GetUnitSpeed("player")
+  -- In restricted contexts (rated PvP, encounters, etc.) GetUnitSpeed returns
+  -- secret values under Patch 12.0.0. Return nil as a sentinel so callers can
+  -- treat it as "no data, blank the display" instead of leaking taint.
+  if issecretvalue(currentSpeed) or issecretvalue(runSpeed) then
+    return nil, nil
+  end
+  return currentSpeed, runSpeed
 end
 
 NS.IsFalling = function()
