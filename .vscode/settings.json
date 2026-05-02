@@ -1,6 +1,0 @@
-{
-  "Lua.diagnostics.globals": [
-    "BASE_MOVEMENT_SPEED"
-  ],
-  "Lua.runtime.version": "Lua 5.1"
-}
