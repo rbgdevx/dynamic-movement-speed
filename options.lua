@@ -3,6 +3,7 @@ local AddonName, NS = ...
 local CopyTable = CopyTable
 local next = next
 local LibStub = LibStub
+local IsPlayerMoving = IsPlayerMoving
 
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
@@ -44,8 +45,9 @@ NS.AceConfig = {
       set = function(_, val)
         NS.db.global.showzero = val
         local currentSpeed, runSpeed = NS.GetSpeedInfo()
-        local staticSpeed = NS.db.global.showzero and 0 or runSpeed
-        local showSpeed = (currentSpeed == 0 or NS.Interface.speed == 0) and staticSpeed or NS.Interface.speed
+        local moving = IsPlayerMoving()
+        local showSpeed = moving and currentSpeed or (val and 0 or runSpeed)
+        NS.Interface.speed = showSpeed
         NS.UpdateText(NS.Interface.text, showSpeed, NS.db.global.decimals, NS.IsDragonRiding() and NS.IsFlying())
       end,
       get = function(_)
@@ -86,8 +88,7 @@ NS.AceConfig = {
           NS.db.global.decimals,
           NS.IsDragonRiding() and NS.IsFlying()
         )
-        NS.Interface.textFrame:SetWidth(NS.Interface.text:GetStringWidth())
-        NS.Interface.textFrame:SetHeight(NS.Interface.text:GetStringHeight())
+        NS.AutoSize(NS.Interface.textFrame, NS.Interface.text)
       end,
       get = function(_)
         return NS.db.global.labeltext
@@ -97,7 +98,7 @@ NS.AceConfig = {
     decimals = {
       type = "range",
       name = "Decimals",
-      desc = "The number of decimal places to show.",
+      desc = "The number of decimal places to show. Trailing zeros are dropped (100% rather than 100.00%).",
       width = "double",
       min = 0,
       max = 5,
@@ -106,8 +107,7 @@ NS.AceConfig = {
       set = function(_, val)
         NS.db.global.decimals = val
         NS.UpdateText(NS.Interface.text, NS.Interface.speed, val, NS.IsDragonRiding() and NS.IsFlying())
-        NS.Interface.textFrame:SetWidth(NS.Interface.text:GetStringWidth())
-        NS.Interface.textFrame:SetHeight(NS.Interface.text:GetStringHeight())
+        NS.AutoSize(NS.Interface.textFrame, NS.Interface.text)
       end,
       get = function(_)
         return NS.db.global.decimals
@@ -125,8 +125,7 @@ NS.AceConfig = {
       set = function(_, val)
         NS.db.global.fontsize = val
         NS.UpdateFont(NS.Interface.text)
-        NS.Interface.textFrame:SetWidth(NS.Interface.text:GetStringWidth())
-        NS.Interface.textFrame:SetHeight(NS.Interface.text:GetStringHeight())
+        NS.AutoSize(NS.Interface.textFrame, NS.Interface.text)
       end,
       get = function(_)
         return NS.db.global.fontsize
@@ -143,8 +142,7 @@ NS.AceConfig = {
       set = function(_, val)
         NS.db.global.font = val
         NS.UpdateFont(NS.Interface.text)
-        NS.Interface.textFrame:SetWidth(NS.Interface.text:GetStringWidth())
-        NS.Interface.textFrame:SetHeight(NS.Interface.text:GetStringHeight())
+        NS.AutoSize(NS.Interface.textFrame, NS.Interface.text)
       end,
       get = function(_)
         return NS.db.global.font

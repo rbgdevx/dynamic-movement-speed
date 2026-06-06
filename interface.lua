@@ -2,6 +2,7 @@ local AddonName, NS = ...
 
 local CreateFrame = CreateFrame
 local LibStub = LibStub
+local IsPlayerMoving = IsPlayerMoving
 local issecretvalue = issecretvalue or function(_)
   return false
 end
@@ -94,13 +95,9 @@ function Interface:CreateInterface()
 
     local currentSpeed, runSpeed = NS.GetSpeedInfo()
     NS.UpdateFont(Text)
-    local showSpeed
-    if currentSpeed == nil then
-      Text:SetText("")
-    else
-      showSpeed = currentSpeed == 0 and (NS.db.global.showzero and 0 or runSpeed) or currentSpeed
-      NS.UpdateText(Text, showSpeed, NS.db.global.decimals, NS.IsDragonRiding() and NS.IsFlying())
-    end
+    local moving = IsPlayerMoving()
+    local showSpeed = moving and currentSpeed or (NS.db.global.showzero and 0 or runSpeed)
+    NS.UpdateText(Text, showSpeed, NS.db.global.decimals, NS.IsDragonRiding() and NS.IsFlying())
 
     Interface.speed = showSpeed
     Interface.text = Text
@@ -112,7 +109,6 @@ function Interface:CreateInterface()
       self:Unlock(Interface.textFrame)
     end
 
-    TextFrame:SetWidth(Text:GetStringWidth())
-    TextFrame:SetHeight(Text:GetStringHeight())
+    NS.AutoSize(TextFrame, Text)
   end
 end

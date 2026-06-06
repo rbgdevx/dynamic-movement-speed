@@ -1,0 +1,62 @@
+{
+  "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
+  "runtime.version": "Lua 5.1",
+  "runtime.nonstandardSymbol": [
+    "!=",
+    "continue",
+    "//"
+  ],
+  "workspace.ignoreDir": [
+    "libs",
+    ".libraries",
+    ".git",
+    ".vscode",
+    ".claude"
+  ],
+  "diagnostics.workspaceDelay": 3000,
+  "diagnostics.disable": [
+    "lowercase-global",
+    "duplicate-set-field",
+    "missing-fields",
+    "inject-field",
+    "cast-local-type",
+    "param-type-mismatch",
+    "return-type-mismatch"
+  ],
+  "diagnostics.globals": [
+    "DMSDB",
+    "SLASH_DMS1",
+    "SLASH_DMS2",
+    "SlashCmdList",
+    "LibStub",
+    "CreateFrame",
+    "UIParent",
+    "FrameUtil",
+    "C_Timer",
+    "C_Map",
+    "C_PlayerInfo",
+    "C_UnitAuras",
+    "GetUnitSpeed",
+    "IsPlayerMoving",
+    "IsFlying",
+    "IsFalling",
+    "UnitIsUnit",
+    "UnitPowerBarID",
+    "UnitPosition",
+    "GetTime",
+    "GetInstanceInfo",
+    "IsInInstance",
+    "BASE_MOVEMENT_SPEED",
+    "AbbreviateNumbers",
+    "issecretvalue",
+    "Round",
+    "format",
+    "CopyTable"
+  ],
+  "completion.callSnippet": "Replace",
+  "completion.keywordSnippet": "Replace",
+  "hint.enable": true,
+  "hint.setType": true,
+  "semantic.enable": true,
+  "telemetry.enable": false
+}

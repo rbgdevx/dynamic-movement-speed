@@ -1,5 +1,9 @@
 # Dynamic Movement Speed
 
+## [v1.4.0](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.4.0) (2026-06-06)
+
+- Converting how percentage format works to be the new secret handling way from blizzard so this works in combat and instances again
+
 ## [v1.3.5](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.3.5) (2026-04-22)
 
 - Addressing another new secret value error from blizzard

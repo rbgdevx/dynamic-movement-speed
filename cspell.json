@@ -1,0 +1,33 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "version": "0.2",
+  "language": "en",
+  "ignorePaths": [
+    ".git/**",
+    ".libraries/**",
+    "libs/**",
+    "*.lock",
+    "*.zip"
+  ],
+  "words": [
+    "aberrus",
+    "addon",
+    "addons",
+    "dms",
+    "friz",
+    "libstub",
+    "luals",
+    "nokhud",
+    "pvp",
+    "quadrata",
+    "rbgdev",
+    "rbgdevx",
+    "rgba",
+    "stylua",
+    "wago",
+    "wow",
+    "zaralek"
+  ],
+  "flagWords": [],
+  "allowCompoundWords": true
+}

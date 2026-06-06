@@ -7,6 +7,9 @@ local IsPlayerMoving = IsPlayerMoving
 local GetTime = GetTime
 local UnitIsUnit = UnitIsUnit
 local GetUnitSpeed = GetUnitSpeed
+local issecretvalue = issecretvalue or function()
+  return false
+end
 
 local mmin = math.min
 -- local mmax = math.max
@@ -291,6 +294,12 @@ do
     local speed = forwardSpeed
 
     local thrill = GetPlayerAuraBySpellID(thrillBuff)
+    -- Aura data is secret in restricted contexts; collapse it to a plain bool so
+    -- the boolean tests below never touch a secret. (forwardSpeed above is not
+    -- secret, so the skyriding readout itself keeps working in combat.)
+    if issecretvalue(thrill) then
+      thrill = false
+    end
     local boosting = thrill and time < ascentStart + ascentDuration
 
     local adjustedSpeed = speed
@@ -326,79 +335,66 @@ end
 do
   --- @class PlayerMovingFrame
   --- @field moving boolean|nil
-  --- @field speed integer|nil
+  --- @field lastDraw number|nil
 
   --- @type PlayerMovingFrame|Frame|nil
   local playerMovingFrame = nil
 
+  local drawPeriod = 1 / 20
+
   local function PlayerMoveUpdate()
+    if not playerMovingFrame then
+      return
+    end
+
     local moving = IsPlayerMoving()
     isFalling = NS.IsFalling()
     isDriving = NS.IsDriving()
     isDragonRiding = NS.IsDragonRiding()
     isFlying = NS.IsFlying()
 
-    if playerMovingFrame and (playerMovingFrame.moving ~= moving or playerMovingFrame.moving == nil) then
-      playerMovingFrame.moving = moving
-    end
+    -- Redraw gating uses non-secret signals only. The speed may be secret, so
+    -- we can't dedupe by comparing it: instead we idle while standing still and
+    -- throttle to ~20fps while moving. moving (IsPlayerMoving) is never secret.
+    local stateChanged = playerMovingFrame.moving ~= moving
+    playerMovingFrame.moving = moving
 
-    local currentSpeed, runSpeed = NS.GetSpeedInfo()
-
-    -- Secret context: blank once and bail, keep OnUpdate running so the
-    -- next real-data tick can restore the display.
-    if currentSpeed == nil then
-      if playerMovingFrame and not playerMovingFrame.blanked then
-        Interface.text:SetText("")
-        playerMovingFrame.blanked = true
-        playerMovingFrame.speed = nil
-      end
+    if not moving and not stateChanged then
       return
     end
 
-    -- Just came out of a secret context: invalidate the cached speed so
-    -- the comparison below fires and redraws.
-    if playerMovingFrame and playerMovingFrame.blanked then
-      playerMovingFrame.blanked = false
-      playerMovingFrame.speed = nil
+    local now = GetTime()
+    if not stateChanged and (now - (playerMovingFrame.lastDraw or 0)) < drawPeriod then
+      return
     end
+    playerMovingFrame.lastDraw = now
 
-    local correctSpeed = currentSpeed
+    local currentSpeed, runSpeed = NS.GetSpeedInfo()
 
-    -- if isFalling then
+    -- Pick what to show from the movement state, never from the speed value.
+    -- Driving/skyriding derive their own speed from non-secret position and
+    -- gliding data, so those keep working in restricted contexts.
+    local showSpeed
+
+    -- if moving and isFalling then
     --  DMS:GetFallingSpeed()
-    --  correctSpeed = dynamicSpeed
+    --  showSpeed = dynamicSpeed
     -- end
 
     if moving and isDriving then
       DMS:GetDrivingSpeed()
-      correctSpeed = dynamicSpeed
-    end
-
-    if moving and isFlying and isDragonRiding then
+      showSpeed = dynamicSpeed
+    elseif moving and isFlying and isDragonRiding then
       DMS:GetDragonRidingSpeed()
-      correctSpeed = dynamicSpeed
+      showSpeed = dynamicSpeed
+    elseif moving then
+      showSpeed = currentSpeed
+    else
+      showSpeed = NS.db.global.showzero and 0 or runSpeed
     end
 
-    if playerMovingFrame and playerMovingFrame.speed ~= correctSpeed then
-      playerMovingFrame.speed = correctSpeed
-
-      local speedPercent = playerMovingFrame.speed
-
-      if playerMovingFrame.moving or correctSpeed > 0 then
-        local showSpeed = correctSpeed
-        if not isFlying and not isDriving then
-          showSpeed = currentSpeed == 0 and runSpeed or currentSpeed
-        end
-
-        speedPercent = showSpeed
-      else
-        local showSpeed = NS.db.global.showzero and 0 or runSpeed
-        speedPercent = showSpeed
-      end
-
-      NS.Interface.speed = speedPercent
-      NS.UpdateText(Interface.text, speedPercent, NS.db.global.decimals, isDragonRiding and isFlying)
-    end
+    NS.Interface.speed = showSpeed
+    NS.UpdateText(Interface.text, showSpeed, NS.db.global.decimals, isDragonRiding and isFlying)
   end
 
   function DMS:WatchForPlayerMoving()
@@ -407,28 +403,20 @@ do
     isDragonRiding = NS.IsDragonRiding()
     isFlying = NS.IsFlying()
 
+    local moving = IsPlayerMoving()
     local currentSpeed, runSpeed = NS.GetSpeedInfo()
+    -- moving and currentSpeed or (...) is all boolean tests, which are allowed
+    -- on secret values; we never compare the speed itself.
+    local showSpeed = moving and currentSpeed or (NS.db.global.showzero and 0 or runSpeed)
 
-    if currentSpeed == nil then
-      Interface.text:SetText("")
-    else
-      local showSpeed = currentSpeed == 0 and (NS.db.global.showzero and 0 or runSpeed) or currentSpeed
-      NS.UpdateText(Interface.text, showSpeed, NS.db.global.decimals, isDragonRiding and isFlying)
-    end
+    NS.Interface.speed = showSpeed
+    NS.UpdateText(Interface.text, showSpeed, NS.db.global.decimals, isDragonRiding and isFlying)
 
     if not playerMovingFrame then
       playerMovingFrame = CreateFrame("Frame")
       --- @cast playerMovingFrame PlayerMovingFrame
-      playerMovingFrame.speed = currentSpeed
-      playerMovingFrame.blanked = currentSpeed == nil
-
-      if currentSpeed ~= nil then
-        local runSpeedPercent = runSpeed
-        local showSpeed = currentSpeed == 0 and (NS.db.global.showzero and 0 or runSpeedPercent) or currentSpeed
-        NS.Interface.speed = showSpeed
-        NS.UpdateText(Interface.text, showSpeed, NS.db.global.decimals, isDragonRiding and isFlying)
-      end
     end
+    playerMovingFrame.moving = moving
 
     playerMovingFrame:SetScript("OnUpdate", PlayerMoveUpdate)
   end
@@ -460,16 +448,23 @@ function DMS:PLAYER_ENTERING_WORLD()
     C_Timer.NewTicker(0.1, function()
       local isGliding, canGlide, forwardSpeed = GetGlidingInfo()
       local base = isGliding and forwardSpeed or GetUnitSpeed("player")
-      local movespeed = Round(base / BASE_MOVEMENT_SPEED * 100)
       f.glide:SetText(format("Gliding speed: |cff71d5ff%d%%|r", forwardSpeed))
-      f.movespeed:SetText(format("Move speed: |cffffff00%d%%|r", movespeed))
+      if issecretvalue(base) then
+        -- GetUnitSpeed is secret in restricted contexts; can't do the math here.
+        f.movespeed:SetText("Move speed: |cffffff00--|r")
+      else
+        local movespeed = Round(base / BASE_MOVEMENT_SPEED * 100)
+        f.movespeed:SetText(format("Move speed: |cffffff00%d%%|r", movespeed))
+      end
     end)
   end
 end
 
 local function checkSpeed()
-  local _, runSpeed = NS.GetSpeedInfo()
-  if runSpeed == lastUpdatedSpeed then
+  local _, runSpeed, isSecret = NS.GetSpeedInfo()
+  -- runSpeed is secret in restricted contexts, so we can't poll for it to change
+  -- after a mount swap. In that case skip the poll and just refresh once.
+  if not isSecret and runSpeed == lastUpdatedSpeed then
     After(0.1, checkSpeed)
   else
     isFalling = NS.IsFalling()
@@ -481,7 +476,13 @@ local function checkSpeed()
 end
 
 function DMS:PLAYER_MOUNT_DISPLAY_CHANGED()
-  local _, runSpeed = NS.GetSpeedInfo()
+  local _, runSpeed, isSecret = NS.GetSpeedInfo()
+  if isSecret then
+    -- Can't compare secret speeds to detect when the new mount speed settles;
+    -- just refresh the display now.
+    DMS:WatchForPlayerMoving()
+    return
+  end
   lastUpdatedSpeed = runSpeed
   if runSpeed ~= nil then
     After(0, checkSpeed)
