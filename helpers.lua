@@ -52,10 +52,21 @@ end
 -- scale and fractionDivisor sets the decimal resolution. We use two scales:
 --   percentOptions: raw yd/s -> %  (significand*fraction = BASE_MOVEMENT_SPEED/100)
 --   riderOptions:   value already a % -> %  (identity, significand*fraction = 1)
--- Caveat vs the old string.format path: AbbreviateNumbers truncates (not rounds)
--- and drops trailing zeros, so this renders "100%" / "150.5%", never "100.00%".
+-- It TRUNCATES (floor, not round) and drops trailing zeros, so this renders
+-- "100%" / "150.5%", never "100.00%".
+--
+-- BOUNDARY_NUDGE works around a truncation artifact: the ideal divisors don't
+-- land exactly in IEEE-754 (e.g. 7 / 0.0007 == 9999.99999999, not 10000), so an
+-- exact 100% floors to 99.99%. Shrinking the divisor by a hair lifts the quotient
+-- back onto the integer for on-boundary values without disturbing interior ones
+-- (which still truncate as before). The API has no round mode, so this is the
+-- only lever. Safe window ~ 1e-13 << nudge << 1e-8 (must beat ~2 ULP of float
+-- error, must stay far below one display bucket even at dec 5 / ~830%); 1e-11 is
+-- mid-window. Do not enlarge it.
+local BOUNDARY_NUDGE = 1e-11
 local percentOptions, riderOptions = {}, {}
 do
+  local nudge = 1 / (1 + BOUNDARY_NUDGE)
   local fractionByDecimals = { [0] = 1, [1] = 10, [2] = 100, [3] = 1000, [4] = 10000, [5] = 100000 }
   for decimals, fraction in pairs(fractionByDecimals) do
     percentOptions[decimals] = {
@@ -64,7 +75,7 @@ do
           breakpoint = 0,
           abbreviation = "%",
           abbreviationIsGlobal = false,
-          significandDivisor = (BASE_MOVEMENT_SPEED / 100) / fraction,
+          significandDivisor = BASE_MOVEMENT_SPEED / (100 * fraction) * nudge,
           fractionDivisor = fraction,
         },
       },
@@ -75,7 +86,7 @@ do
           breakpoint = 0,
           abbreviation = "%",
           abbreviationIsGlobal = false,
-          significandDivisor = 1 / fraction,
+          significandDivisor = 1 / fraction * nudge,
           fractionDivisor = fraction,
         },
       },

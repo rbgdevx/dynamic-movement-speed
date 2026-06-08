@@ -1,5 +1,9 @@
 # Dynamic Movement Speed
 
+## [v1.4.1](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.4.1) (2026-06-07)
+
+- Fixing a rounding issue where exact speeds like 100% could display as 99.99%
+
 ## [v1.4.0](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.4.0) (2026-06-06)
 
 - Converting how percentage format works to be the new secret handling way from blizzard so this works in combat and instances again
