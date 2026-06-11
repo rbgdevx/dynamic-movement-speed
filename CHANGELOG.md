@@ -1,5 +1,10 @@
 # Dynamic Movement Speed
 
+## [v1.4.2](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.4.2) (2026-06-10)
+
+- New shadow color + offset settings
+- New outline setting
+
 ## [v1.4.1](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.4.1) (2026-06-07)
 
 - Fixing a rounding issue where exact speeds like 100% could display as 99.99%

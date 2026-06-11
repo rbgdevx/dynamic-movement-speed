@@ -20,8 +20,12 @@ local CreateFrame = CreateFrame
 ---@field showlabel boolean
 ---@field showzero boolean
 ---@field font string
+---@field outline string
 ---@field decimals number
 ---@field color ColorArray
+---@field shadowcolor ColorArray
+---@field shadowoffsetx number
+---@field shadowoffsety number
 ---@field position PositionArray
 ---@field debug boolean
 
@@ -64,12 +68,21 @@ NS.DefaultDatabase = {
     fontsize = 15,
     decimals = 1,
     font = "Friz Quadrata TT",
+    outline = "OUTLINE",
     color = {
       r = 1,
       g = 1,
       b = 1,
       a = 1,
     },
+    shadowcolor = {
+      r = 0,
+      g = 0,
+      b = 0,
+      a = 1,
+    },
+    shadowoffsetx = 0,
+    shadowoffsety = 0,
     position = {
       "CENTER",
       "CENTER",

@@ -119,7 +119,7 @@ NS.AceConfig = {
       name = "Font Size",
       width = "double",
       order = 8,
-      min = 2,
+      min = 1,
       max = 64,
       step = 1,
       set = function(_, val)
@@ -167,6 +167,85 @@ NS.AceConfig = {
       end,
     },
     spacer5 = { type = "description", order = 13, name = " ", width = "full" },
+    outline = {
+      type = "select",
+      name = "Outline",
+      width = 1.5,
+      order = 14,
+      values = {
+        [""] = "None",
+        ["OUTLINE"] = "Outline",
+        ["THICKOUTLINE"] = "Thick Outline",
+        ["MONOCHROME"] = "Monochrome",
+        ["MONOCHROME,OUTLINE"] = "Monochrome Outline",
+        ["MONOCHROME,THICKOUTLINE"] = "Monochrome Thick Outline",
+      },
+      sorting = { "", "OUTLINE", "THICKOUTLINE", "MONOCHROME", "MONOCHROME,OUTLINE", "MONOCHROME,THICKOUTLINE" },
+      set = function(_, val)
+        NS.db.global.outline = val
+        NS.UpdateFont(NS.Interface.text)
+        NS.AutoSize(NS.Interface.textFrame, NS.Interface.text)
+      end,
+      get = function(_)
+        return NS.db.global.outline
+      end,
+    },
+    spacer6 = { name = "", type = "description", order = 15, width = 0.1 },
+    shadowcolor = {
+      type = "color",
+      name = "Shadow Color",
+      width = 1.5,
+      order = 16,
+      hasAlpha = true,
+      set = function(_, val1, val2, val3, val4)
+        NS.db.global.shadowcolor.r = val1
+        NS.db.global.shadowcolor.g = val2
+        NS.db.global.shadowcolor.b = val3
+        NS.db.global.shadowcolor.a = val4
+        NS.UpdateFont(NS.Interface.text)
+      end,
+      get = function(_)
+        return NS.db.global.shadowcolor.r,
+          NS.db.global.shadowcolor.g,
+          NS.db.global.shadowcolor.b,
+          NS.db.global.shadowcolor.a
+      end,
+    },
+    spacer7 = { name = " ", type = "description", order = 17, width = "full" },
+    shadowoffsetx = {
+      type = "range",
+      name = "Shadow Offset X",
+      width = "double",
+      order = 18,
+      min = -10,
+      max = 10,
+      step = 0.5,
+      set = function(_, val)
+        NS.db.global.shadowoffsetx = val
+        NS.UpdateFont(NS.Interface.text)
+      end,
+      get = function(_)
+        return NS.db.global.shadowoffsetx
+      end,
+    },
+    spacer8 = { name = " ", type = "description", order = 19, width = "full" },
+    shadowoffsety = {
+      type = "range",
+      name = "Shadow Offset Y",
+      width = "double",
+      order = 20,
+      min = -10,
+      max = 10,
+      step = 0.5,
+      set = function(_, val)
+        NS.db.global.shadowoffsety = val
+        NS.UpdateFont(NS.Interface.text)
+      end,
+      get = function(_)
+        return NS.db.global.shadowoffsety
+      end,
+    },
+    spacer9 = { type = "description", order = 21, name = " ", width = "full" },
     reset = {
       name = "Reset Everything",
       type = "execute",
@@ -174,7 +253,36 @@ NS.AceConfig = {
       order = 100,
       func = function()
         DMSDB = CopyTable(NS.DefaultDatabase)
-        NS.db = CopyTable(NS.DefaultDatabase)
+        -- NS.db must reference the saved variable itself, otherwise changes
+        -- made after a reset are lost on reload
+        NS.db = DMSDB
+        NS.Interface.text:SetTextColor(
+          NS.db.global.color.r,
+          NS.db.global.color.g,
+          NS.db.global.color.b,
+          NS.db.global.color.a
+        )
+        NS.UpdateFont(NS.Interface.text)
+        NS.UpdateText(
+          NS.Interface.text,
+          NS.Interface.speed,
+          NS.db.global.decimals,
+          NS.IsDragonRiding() and NS.IsFlying()
+        )
+        NS.AutoSize(NS.Interface.textFrame, NS.Interface.text)
+        NS.Interface.textFrame:ClearAllPoints()
+        NS.Interface.textFrame:SetPoint(
+          NS.db.global.position[1],
+          UIParent,
+          NS.db.global.position[2],
+          NS.db.global.position[3],
+          NS.db.global.position[4]
+        )
+        if NS.db.global.lock then
+          NS.Interface:Lock(NS.Interface.textFrame)
+        else
+          NS.Interface:Unlock(NS.Interface.textFrame)
+        end
       end,
     },
   },

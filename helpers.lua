@@ -165,7 +165,14 @@ NS.AutoSize = function(frame, fontString)
 end
 
 NS.UpdateFont = function(frame)
-  frame:SetFont(SharedMedia:Fetch("font", NS.db.global.font), NS.db.global.fontsize, "OUTLINE")
+  frame:SetFont(SharedMedia:Fetch("font", NS.db.global.font), NS.db.global.fontsize, NS.db.global.outline)
+  frame:SetShadowColor(
+    NS.db.global.shadowcolor.r,
+    NS.db.global.shadowcolor.g,
+    NS.db.global.shadowcolor.b,
+    NS.db.global.shadowcolor.a
+  )
+  frame:SetShadowOffset(NS.db.global.shadowoffsetx, NS.db.global.shadowoffsety)
 end
 
 -- Copies table values from src to dst if they don't exist in dst
