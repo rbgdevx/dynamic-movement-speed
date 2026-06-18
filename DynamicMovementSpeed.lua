@@ -74,7 +74,7 @@ do
     isFalling = NS.IsFalling()
 
     -- Player position
-    local currentX, currentY, currentZ = UnitPosition("player")
+    local _, _, currentZ = UnitPosition("player")
     if not currentZ then
       return
     end
@@ -176,8 +176,7 @@ do
     end
 
     -- Get flying speed
-    local currentSpeed = GetUnitSpeed("player")
-    local speed = currentSpeed
+    local speed
 
     -- x, y coordinates
     local x, y = pos:GetXY()
@@ -261,7 +260,8 @@ do
     [2569] = true, -- Aberrus, the Shadowed Crucible
   }
 
-  local speedTextFormat, speedTextFactor = "", 1
+  local speedTextFormat
+  local speedTextFactor = 1
   if speedUnits == 1 then
     speedTextFormat = speedshowunits and "%.1fyd/s" or "%.1f"
   else
@@ -446,7 +446,7 @@ function DMS:PLAYER_ENTERING_WORLD()
     f.movespeed = f:CreateFontString(nil, nil, "GameTooltipText")
     f.movespeed:SetPoint("TOPLEFT", f.glide, "BOTTOMLEFT")
     C_Timer.NewTicker(0.1, function()
-      local isGliding, canGlide, forwardSpeed = GetGlidingInfo()
+      local isGliding, _, forwardSpeed = GetGlidingInfo()
       local base = isGliding and forwardSpeed or GetUnitSpeed("player")
       f.glide:SetText(format("Gliding speed: |cff71d5ff%d%%|r", forwardSpeed))
       if issecretvalue(base) then
@@ -510,7 +510,7 @@ function DMS:PLAYER_CAN_GLIDE_CHANGED(canGlide)
   self:WatchForPlayerMoving()
 end
 
-function DMS:UNIT_SPELLCAST_SUCCEEDED(unitTarget, _, spellID)
+function DMS:UNIT_SPELLCAST_SUCCEEDED(_unitTarget, _, spellID)
   if spellID == ascentSpell or spellID == boostSpell then
     ascentStart = GetTime()
   end

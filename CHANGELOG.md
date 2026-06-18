@@ -1,5 +1,10 @@
 # Dynamic Movement Speed
 
+## [v1.4.3](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.4.3) (2026-06-18)
+
+- Update toc
+- Cleanup
+
 ## [v1.4.2](https://github.com/rbgdevx/dynamic-movement-speed/releases/tag/v1.4.2) (2026-06-10)
 
 - New shadow color + offset settings
